@@ -1,0 +1,76 @@
+- name: Set some fact
+  set_fact:
+    zabbix_short_version: "{{ zabbix_version | regex_replace('\\.', '') }}"
+
+- name: Install Zabbix Repo.
+  yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.baseurl }}"
+    gpgcheck: "{{ item.gpgcheck }}"
+    gpgkey: "{{ item.gpgkey }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ zabbix_repo_yum }}"
+
+- name: Install Zabbix packeges
+  yum:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-server-mysql
+    - zabbix-web-mysql
+    - zabbix-apache-conf  
+    - zabbix-agent
+    - zabbix-get
+  tags:
+    - zabbix-server
+
+- name: Create /etc/zabbix/scripts
+  file: 
+    path: /etc/zabbix/scripts
+    state: directory
+    recurse: yes
+
+- name: Check if schema for Zabbix Server already loaded
+  shell: mysql -u{{ zbx_database_user }} -p{{ zbx_database_password }} zabbix -e "SHOW TABLES LIKE 'users'" -sN
+  register: dbstatus
+  failed_when: dbstatus.rc == 2
+  tags:
+    - zabbix-server
+
+- name: Copy schema DB
+  shell: cp /usr/share/doc/zabbix-server-mysql/create.sql.gz /tmp
+  tags:
+    - zabbix-server
+
+- name: Import database Zabbix
+  mysql_db:
+   name: zabbix
+   state: import
+   target: /tmp/create.sql.gz
+  ignore_errors: true
+  tags:
+    - zabbix-server
+    
+- name: Make sure zabbix-agent service is running
+  systemd:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+
+- name: Make sure zabbix-server service is running
+  systemd:
+    name: zabbix-server
+    state: started
+    enabled: yes   
+
+- name: Copy zabbix_server.conf template 
+  template:
+  src: templates/zabbix_server.conf.44.j2
+  dest: /etc/zabbix/zabbix_server.conf
+  notify: restart zabbix-server
+
+- name: restart zabbix-server
+  service:
+    name: zabbix-server
+    state: restarted

@@ -1,0 +1,32 @@
+- name: Make sure httpd service is running
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Copy zabbix.conf template 
+  template:
+    src: templates/zabbix.conf.j2
+    dest: /etc/php-fpm.d/zabbix.conf
+  notify: restart php-fpm
+
+- name: Copy web.zabbix.conf template 
+  template:
+    src: templates/zabbix_web.conf.j2
+    dest: /etc/httpd/conf.d/zabbix.conf
+  notify: restart httpd
+
+  #- name: Start firewall
+  #service: 
+  #  name: firewalld
+  #  state: started
+
+  #- name: Create firewall rule
+  #firewalld:
+  #  port: 80/tcp
+  #  permanent: yes
+  #  immediate: yes
+  #  state: enabled
+
+  #- name: Firewalld reload
+  #command: firewall-cmd --reload

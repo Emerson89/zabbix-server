@@ -1,0 +1,36 @@
+#
+## Zabbix monitoring system php web frontend
+##
+
+Alias /zabbix /usr/share/zabbix
+
+<Directory "/usr/share/zabbix">
+    Options FollowSymLinks
+    AllowOverride None
+    Require all granted
+
+    <IfModule dir_module>
+        DirectoryIndex index.php
+    </IfModule>
+
+    <FilesMatch \.(php|phar)$>
+        SetHandler "proxy:unix:/run/php-fpm/zabbix.sock|fcgi://localhost"
+    </FilesMatch>
+</Directory>
+
+<Directory "/usr/share/zabbix/conf">
+    Require all denied
+</Directory>
+
+<Directory "/usr/share/zabbix/app">
+    Require all denied
+</Directory>
+
+<Directory "/usr/share/zabbix/include">
+    Require all denied
+</Directory>
+
+<Directory "/usr/share/zabbix/local">
+    Require all denied
+</Directory>
+

@@ -1,0 +1,41 @@
+zabbix_version: 5.0
+zbx_server_address: 127.0.0.1
+zbx_frontend_address: 127.0.0.1
+zbx_database_address: 127.0.0.1
+zbx_database_saas: False
+mysql_root_password: Zabbixdb#2019!
+zbx_database_user: zabbix
+zbx_database_password: ZabbixDB#2019!
+zabbix_server_package_state: present
+zabbix_server_install_recommends: True
+zabbix_server_install_database_cliente: True
+zabbix_repo: zabbix
+zabbix_repo_yum:
+  - name: zabbix
+    description: Zabbix Official Repository - $basearch
+    baseurl: http://repo.zabbix.com/zabbix/{{ zabbix_version }}/rhel/{{ ansible_distribution_major_version }}/$basearch/
+    gpgcheck: 0
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
+    state: present
+  - name: zabbix-supported
+    description: Zabbix Official Repository non-supported - $basearch
+    baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_distribution_major_version }}/$basearch/
+    gpgcheck: 0
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
+    state: present
+# Zabbix Server parameters
+zbx_start_pollers: 10
+zbx_start_pollersunreachable: 10
+zbx_start_trappers: 10
+zbx_start_pingers: 10
+zbx_timeout: 30
+zbx_cache_size: 256M
+zbx_value_cache_size: 256M
+# Frontend parameters
+time_zone: America/Sao_Paulo
+# Database
+zabbix_server_database: mysql # mysql or pgsql
+zabbix_server_database_long: mysql # mysql or postgresql
+zabbix_database_creation: True
+zabbix_database_sqlload: True
+
