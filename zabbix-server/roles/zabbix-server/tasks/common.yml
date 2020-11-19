@@ -5,27 +5,20 @@
 - name: Disable SELinux
   selinux:
     state: disabled
-
-    #- name: Install packages
-    #yum:
-    #name: 
-    #    - epel-release
-    #    - net-tools
-    #    - vim
-    #    - nano
-    #    - wget
-    #    - telnet
-    #    - rsync
-    #    - git
-    #    - python36
-    #state: present
-
-    #- name: Install python packages
-    # yum:
-    #name:
-    #    - python
-    #    - python-pip
-    #state: present
+    
+- name: Install packages
+  yum:
+    name:
+        - epel-release
+        - net-tools
+        - vim
+        - nano
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python36
+    state: present
 
 - name: Install pip packages
   pip:
