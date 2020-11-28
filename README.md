@@ -10,7 +10,7 @@
 
 ## Edite o arquivo hosts para ip do host destino
 
-## Para usar o apache use a v1.0
+## Para usar o apache use a v1.1
 
 ## Exemplo de playbook
 ```
