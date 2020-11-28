@@ -2,6 +2,10 @@
   service:
     name: mysqld
     state: restarted
+- name: restart zabbix-agent
+  service:
+    name: zabbix-agent
+    state: restarted
 - name: restart zabbix-server
   service:
     name: zabbix-server
