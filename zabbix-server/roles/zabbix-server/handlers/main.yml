@@ -10,10 +10,6 @@
   service:
     name: zabbix-server
     state: restarted
-- name: restart zabbix-agent
-  service:
-    name: zabbix-agent
-    state: restarted
 - name: restart nginx
   service:
     name: nginx
