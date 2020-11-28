@@ -19,7 +19,7 @@
     packeges:
     - zabbix-server-mysql
     - zabbix-web-mysql
-    - zabbix-apache-conf  
+    - zabbix-nginx-conf  
     - zabbix-agent
     - zabbix-get
   tags:
@@ -66,8 +66,8 @@
 
 - name: Copy zabbix_server.conf template 
   template:
-  src: templates/zabbix_server.conf.44.j2
-  dest: /etc/zabbix/zabbix_server.conf
+    src: templates/zabbix_server.conf.44.j2
+    dest: /etc/zabbix/zabbix_server.conf
   notify: restart zabbix-server
 
 - name: restart zabbix-server

@@ -1,6 +1,6 @@
-- name: Make sure httpd service is running
+- name: Make sure nginx service is running
   systemd:
-    name: httpd
+    name: nginx
     state: started
     enabled: yes
 
@@ -13,8 +13,8 @@
 - name: Copy web.zabbix.conf template 
   template:
     src: templates/zabbix_web.conf.j2
-    dest: /etc/httpd/conf.d/zabbix.conf
-  notify: restart httpd
+    dest: /etc/nginx/conf.d/zabbix.conf
+  notify: restart nginx
 
 - name: Start firewall
   service: 
