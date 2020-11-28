@@ -74,3 +74,10 @@
   service:
     name: zabbix-server
     state: restarted
+
+- name: Copy zabbix_agent.conf template 
+  template:
+    src: templates/zabbix_agentd.conf.44.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: restart zabbix-agent
+
