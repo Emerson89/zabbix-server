@@ -4,13 +4,23 @@
     state: started
     enabled: yes
 
+- name: Configure Zabbix Server Web
+  template:
+    src: zabbix.conf.php.j2
+    dest: /etc/zabbix/web/zabbix.conf.php
+    mode: '0644'
+  notify: restart nginx
+
 - name: Copy zabbix.conf template 
   template:
     src: templates/zabbix.conf.j2
     dest: /etc/php-fpm.d/zabbix.conf
-    
-- name: Restart php and enable boot
-  service: name=php-fpm state=restarted enabled=yes
+
+- name: Make sure php service is running
+  systemd:
+    name: php-fpm
+    state: restarted
+    enabled: yes
 
 - name: Copy web.zabbix.conf template 
   template:
@@ -18,17 +28,3 @@
     dest: /etc/nginx/conf.d/zabbix.conf
   notify: restart nginx
 
-#- name: Start firewall
-#  service: 
-#    name: firewalld
-#    state: started
-
-#- name: Create firewall rule
-#  firewalld:
-#   port: 80/tcp
-#    permanent: yes
-#    immediate: yes
-#    state: enabled
-
-#- name: Firewalld reload
-#  command: firewall-cmd --reload

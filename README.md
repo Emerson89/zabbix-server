@@ -1,4 +1,4 @@
-# Instalação zabbix-server 5.0 Centos 8 usando ansible AWS
+# Instalação zabbix-server 5.0 usando ansible
 
 ![Badge](https://img.shields.io/badge/ansible-zabbix-red)
 ![Badge](https://img.shields.io/badge/aws-zabbix-red)

@@ -1,0 +1,45 @@
+---
+  - name: Install pyzabbix
+    pip:
+     name:
+       - pyzabbix
+    
+  - name: Get authentication token Zabbix
+    uri:
+      url: '{{ url_zabbix_api }}'
+      body_format: json
+      headers:
+        Content-type: application/json
+      body: 
+        jsonrpc: "2.0"
+        method: user.login
+        id: 1
+        auth: null
+        params: 
+          user: "Admin"
+          password: "zabbix"
+          userData: true
+      return_content: yes
+    register: auth
+
+  - debug:
+      msg: '{{ auth | json_query("json.result") }}'
+      
+  - name: Mudar senha do usuario logado
+    uri:
+      url: '{{ url_zabbix_api }}'
+      body_format: json
+      headers:
+        Content-type: application/json
+      body: 
+        jsonrpc: "2.0"
+        method: user.update
+        id: 1
+        auth: '{{ auth.json.result.sessionid }}'
+        params:
+          userid: '{{ auth.json.result.userid }}'
+          passwd: '{{ pass_zabbix }}'
+    register: output 
+     
+  - debug:
+      msg: '{{ output.json }}'

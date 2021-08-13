@@ -18,8 +18,7 @@
   vars:
     packeges:
     - zabbix-server-mysql
-    - zabbix-web-mysql
-    - zabbix-nginx-conf  
+    - zabbix-sql-scripts
     - zabbix-agent
     - zabbix-get
   tags:
@@ -31,27 +30,41 @@
     state: directory
     recurse: yes
 
-- name: Check if schema for Zabbix Server already loaded
-  shell: mysql -u{{ zbx_database_user }} -p{{ zbx_database_password }} zabbix -e "SHOW TABLES LIKE 'users'" -sN
-  register: dbstatus
-  failed_when: dbstatus.rc == 2
+- name: Create Zabbix server MySQL user
+  mysql_user:
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ zbx_database_user_root }}"
+    login_password: "{{ mysql_password_root }}"
+    name: "{{ zbx_database_user }}"
+    host: '%'
+    password: "{{ zbx_database_password }}"
+    priv: "{{ zbx_database_db }}.*:ALL"
+    state: present
   tags:
     - zabbix-server
 
-- name: Copy schema DB
-  shell: cp /usr/share/doc/zabbix-server-mysql/create.sql.gz /tmp
+- name: Create a new database for Zabbix Server
+  mysql_db:
+    name: "{{ zbx_database_db }}"
+    state: present
+    encoding: utf8
+    collation: utf8_bin
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ zbx_database_user_root }}"
+    login_password: "{{ mysql_password_root }}"
   tags:
     - zabbix-server
 
 - name: Import database Zabbix
   mysql_db:
-   name: zabbix
+   login_host: "{{ zbx_database_address }}"
+   login_user: "{{ zbx_database_user_root }}"
+   login_password: "{{ mysql_password_root }}"
+   name: "{{ zbx_database_db }}"
    state: import
-   target: /tmp/create.sql.gz
+   target: /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz
   ignore_errors: true
-  tags:
-    - zabbix-server
-    
+
 - name: Make sure zabbix-agent service is running
   systemd:
     name: zabbix-agent

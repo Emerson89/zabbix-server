@@ -1,8 +1,13 @@
 zabbix_version: 5.4
+repo_zabbix: deb https://repo.zabbix.com/zabbix/5.4/ubuntu focal main
 zabbix_hostname: "{{ ansible_ssh_host }}"
-zbx_database_db: zabbix
+zbx_database_name: zabbix
 zbx_database_user: zabbix
+####Usuário console do Zabbix Server
+user_zabbix: Admin
+####URL para acesso via api
 url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
+#####Adicionado repo zabbix
 zabbix_repo: zabbix
 zabbix_repo_yum:
   - name: zabbix
@@ -16,7 +21,7 @@ zabbix_repo_yum:
     baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_distribution_major_version }}/$basearch/
     gpgcheck: 0
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
-    state: present
+    state: present    
 # Zabbix Server parameters
 zbx_start_pollers: 10
 zbx_start_pollersunreachable: 10
@@ -27,9 +32,4 @@ zbx_cache_size: 256M
 zbx_value_cache_size: 256M
 # Frontend parameters
 time_zone: America/Sao_Paulo
-# Database
-zabbix_server_database: mysql # mysql or pgsql
-zabbix_server_database_long: mysql # mysql or postgresql
-zabbix_database_creation: True
-zabbix_database_sqlload: True
 

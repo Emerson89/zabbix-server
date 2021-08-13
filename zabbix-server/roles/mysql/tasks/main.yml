@@ -1,4 +1,4 @@
 - name: Install common packages
   include_tasks: "common.yml" 
-- name: Install Zabbix Server
-  include: "Zbx-server.yml"
+- name: Install Mysql
+  include: "mysql.yml"

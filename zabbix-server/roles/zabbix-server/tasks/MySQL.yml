@@ -8,21 +8,3 @@
     name: mysqld
     state: started
     enabled: yes
-
-- name: Create a new database for Zabbix Server
-  mysql_db:
-    name: zabbix
-    state: present
-    encoding: utf8
-    collation: utf8_bin
-  tags:
-    - zabbix-server
-
-- name: Create Zabbix server MySQL user
-  mysql_user:
-    name: zabbix
-    password: "{{ zbx_database_password }}"
-    priv: "zabbix.*:ALL"
-    state: present
-  tags:
-    - zabbix-server

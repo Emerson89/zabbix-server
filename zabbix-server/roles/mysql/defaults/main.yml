@@ -1,0 +1,10 @@
+zabbix_version: 5.4
+zabbix_hostname: "{{ ansible_ssh_host }}"
+zbx_database_db: zabbix
+zbx_database_user: zabbix
+zbx_database_address: localhost
+# Database
+zabbix_server_database: mysql # mysql or pgsql
+zabbix_server_database_long: mysql # mysql or postgresql
+zabbix_database_creation: True
+zabbix_database_sqlload: True

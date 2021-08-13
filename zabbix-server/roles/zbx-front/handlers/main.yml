@@ -1,0 +1,14 @@
+- name: restart zabbix-agent
+  service:
+    name: zabbix-agent
+    state: restarted
+- name: restart php
+  service:
+    name: php-fpm
+    state: restarted
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+
+

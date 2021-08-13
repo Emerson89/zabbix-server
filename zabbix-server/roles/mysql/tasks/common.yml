@@ -1,6 +1,6 @@
 - name: Debug IPv4
   debug: 
-    msg: "{{ ansible_ssh_host }} {{ ansible_default_ipv4.address }} {{ ansible_all_ipv4_addresses[0] }} {{ ansible_lo.ipv4.address }} {{ zbx_server_address }} {{ zbx_database_address }}"
+    msg: "{{ ansible_ssh_host }} {{ ansible_default_ipv4.address }} {{ ansible_all_ipv4_addresses[0] }} {{ ansible_lo.ipv4.address }} {{ zbx_database_address }}"
 
 - name: Disable SELinux
   selinux:
@@ -24,8 +24,3 @@
   pip:
     name:
         - pymysql
-
-- name: Install MySQL-client
-  yum:
-    name: mysql
-    state: present
