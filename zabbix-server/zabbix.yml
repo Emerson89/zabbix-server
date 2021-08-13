@@ -2,7 +2,7 @@
 - name: Install Banco
   hosts: mysql
   vars:
-    mysql_password_root: Mandic123
+    mysql_password_root: default123
   become: yes
   roles:
   - mysql
@@ -10,10 +10,10 @@
 - name: Install Zabbix Server
   hosts: zabbix
   vars:
-    zbx_server_address: 192.168.33.10
-    zbx_database_address: 192.168.33.11
-    zbx_database_password: Mandic123
-    mysql_password_root: Mandic123
+    zbx_server_address: localhost
+    zbx_database_address: localhost
+    zbx_database_password: default123
+    mysql_password_root: default123
     zbx_database_user_root: root
   become: yes
   roles:
@@ -22,10 +22,10 @@
 - name: Install Front
   hosts: front
   vars:
-    zbx_database_address: 192.168.33.11
-    zbx_server_address: 192.168.33.10
+    zbx_database_address: localhost
+    zbx_server_address: localhost
     zbx_database_port: 3306
-    zbx_database_password: Mandic123
+    zbx_database_password: default123
     pass_zabbix: zabbix2021
   become: yes
   roles:
