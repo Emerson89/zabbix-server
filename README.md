@@ -28,8 +28,8 @@ IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagra
 [zabbix-server]
 127.0.0.1
 ```
-```
 ## Exemplo de playbook
+```
 ---
 - name: Install Banco
   hosts: mysql
