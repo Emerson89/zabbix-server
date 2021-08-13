@@ -26,7 +26,6 @@
     zbx_server_address: localhost
     zbx_database_port: 3306
     zbx_database_password: default123
-    pass_zabbix: zabbix2021
   become: yes
   roles:
   - zbx-front

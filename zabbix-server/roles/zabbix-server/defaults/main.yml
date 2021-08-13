@@ -25,11 +25,3 @@ zbx_start_pingers: 10
 zbx_timeout: 30
 zbx_cache_size: 256M
 zbx_value_cache_size: 256M
-# Frontend parameters
-time_zone: America/Sao_Paulo
-# Database
-zabbix_server_database: mysql # mysql or pgsql
-zabbix_server_database_long: mysql # mysql or postgresql
-zabbix_database_creation: True
-zabbix_database_sqlload: True
-
