@@ -7,7 +7,7 @@
 ![Badge](https://img.shields.io/badge/ansible-2.9.10-blue)
 ![Badge](https://img.shields.io/badge/Rocky-8-blue)
 
-# Como Usar
+# Como Usar!
 
 ## Crie o arquivo de inventário hosts 
 
