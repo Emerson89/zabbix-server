@@ -25,3 +25,15 @@ zbx_start_pingers: 10
 zbx_timeout: 30
 zbx_cache_size: 256M
 zbx_value_cache_size: 256M
+# Databases.
+mysql_databases: []
+#   - name: example
+#     collation: utf8_general_ci
+#     encoding: utf8
+#     replicate: 1
+# Users.
+mysql_users: []
+#   - name: example
+#     host: 127.0.0.1
+#     password: secret
+#     priv: *.*:USAGE
