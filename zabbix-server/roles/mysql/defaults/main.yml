@@ -3,8 +3,20 @@ zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_db: zabbix
 zbx_database_user: zabbix
 zbx_database_address: localhost
+mysql_root_username: root
+mysql_root_password: root
 # Database
 zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or postgresql
-zabbix_database_creation: True
-zabbix_database_sqlload: True
+# Databases.
+mysql_databases: []
+#   - name: example
+#     collation: utf8_general_ci
+#     encoding: utf8
+#     replicate: 1
+# Users.
+mysql_users: []
+#   - name: example
+#     host: 127.0.0.1
+#     password: secret
+#     priv: *.*:USAGE
