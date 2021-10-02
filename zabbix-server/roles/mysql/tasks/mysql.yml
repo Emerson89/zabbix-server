@@ -26,7 +26,7 @@
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost') }}"
     password: "{{ item.password }}"
-    priv: "{{ item.priv | default('*.*:ALL,GRANT') }}"
+    priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
     state: "{{ item.state | default('present') }}"
     append_privs: "{{ item.append_privs | default('no') }}"
     encrypted: "{{ item.encrypted | default('no') }}"
