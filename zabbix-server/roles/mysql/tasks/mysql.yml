@@ -9,19 +9,7 @@
     state: started
     enabled: yes
 
-#- name: Set Mysql root Password
-#  mysql_user:
-#    login_host: 'localhost'
-#    login_user: 'root'
-#    login_password: ''
-#    host: '%'
-#    name: 'root'
-#    password: '{{ mysql_password_root }}'
-#    priv: "*.*:ALL,GRANT"
-#    state: present
-#  ignore_errors: true
-
-- name: Ensure MySQL users are present.
+- name: Set Mysql root Password
   mysql_user:
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost') }}"

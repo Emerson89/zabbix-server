@@ -29,19 +29,6 @@
     path: /etc/zabbix/scripts
     state: directory
     recurse: yes
-
-#- name: Create Zabbix server MySQL user
-#  mysql_user:
-#    login_host: "{{ item.zbx_database_address | default('localhost')}}"
-#    login_user: "{{ item.zbx_database_user_root | default('root')}}"
-#    login_password: "{{ item.mysql_password_root | default('')}}"
-#    name: "{{ item.zbx_database_user | default('zabbix') }}"
-#    host: "{{ item.zabbix_server_privileged_host | default('localhost')}}"
-#    password: "{{ item.zbx_database_password | default('zabbix')}}"
-#    priv: "{{ zbx_database_db }}.*:ALL"
-#    state: present
-#  tags:
-#    - zabbix-server
     
 - name: Create Zabbix server MySQL user
   mysql_user:
@@ -74,32 +61,10 @@
     login_host: "{{ item.login_host | default('localhost')}}"
     login_user: "{{ item.login_user | default('root')}}"
     login_password: "{{ item.login_password | default('')}}"
-    name: "{{ item.name }}"
+    name: "{{ zbx_database_db }}"
     state: import
     target: /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz
   ignore_errors: true
- 
-#- name: Create a new database for Zabbix Server
-#  mysql_db:
-#    name: "{{ zbx_database_db }}"
-#    state: present
-#    encoding: utf8
-#    collation: utf8_bin
-#    login_host: "{{ zbx_database_address }}"
-#    login_user: "{{ zbx_database_user_root }}"
-#    login_password: "{{ mysql_password_root }}"
-#  tags:
-#    - zabbix-server
-
-#- name: Import database Zabbix
-#  mysql_db:
-#   login_host: "{{ zbx_database_address }}"
-#   login_user: "{{ zbx_database_user_root }}"
-#   login_password: "{{ mysql_password_root }}"
-#   name: "{{ zbx_database_db }}"
-#   state: import
-#   target: /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz
-#  ignore_errors: true
 
 - name: Make sure zabbix-agent service is running
   systemd:

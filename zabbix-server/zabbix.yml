@@ -1,6 +1,6 @@
 ---
 - name: Install Banco
-  hosts: mysql
+  hosts: all
   vars:
     mysql_password_root: default123
   become: yes
@@ -8,7 +8,7 @@
   - mysql
 
 - name: Install Zabbix Server
-  hosts: zabbix
+  hosts: all
   vars:
     zbx_server_address: localhost
     zbx_database_address: localhost
@@ -20,7 +20,7 @@
   - zabbix-server
 
 - name: Install Front
-  hosts: front
+  hosts: all
   vars:
     zbx_database_address: localhost
     zbx_server_address: localhost
