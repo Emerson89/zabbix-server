@@ -9,14 +9,26 @@
     state: started
     enabled: yes
 
-- name: Set Mysql root Password
+#- name: Set Mysql root Password
+#  mysql_user:
+#    login_host: 'localhost'
+#    login_user: 'root'
+#    login_password: ''
+#    host: '%'
+#    name: 'root'
+#    password: '{{ mysql_password_root }}'
+#    priv: "*.*:ALL,GRANT"
+#    state: present
+#  ignore_errors: true
+
+- name: Ensure MySQL users are present.
   mysql_user:
-    login_host: 'localhost'
-    login_user: 'root'
-    login_password: ''
-    host: '%'
-    name: 'root'
-    password: '{{ mysql_password_root }}'
-    priv: "*.*:ALL,GRANT"
-    state: present
-  ignore_errors: true
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv | default('*.*:ALL,GRANT') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default('no') }}"
+    encrypted: "{{ item.encrypted | default('no') }}"
+  with_items: "{{ mysql_users }}"
+  no_log: true
