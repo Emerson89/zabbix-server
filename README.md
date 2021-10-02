@@ -32,7 +32,7 @@ IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagra
 ```
 ---
 - name: Install Banco
-  hosts: mysql
+  hosts: all
   vars:
     mysql_password_root: default123
   become: yes
@@ -40,7 +40,7 @@ IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagra
   - mysql
 
 - name: Install Zabbix Server
-  hosts: zabbix
+  hosts: all
   vars:
     zbx_server_address: localhost
     zbx_database_address: localhost
@@ -52,7 +52,7 @@ IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagra
   - zabbix-server
 
 - name: Install Front
-  hosts: front
+  hosts: all
   vars:
     zbx_database_address: localhost
     zbx_server_address: localhost
@@ -62,6 +62,17 @@ IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagra
   become: yes
   roles:
   - zbx-front
+```
+## Inside banco zabbix-server/vars/main.yml:
+```
+mysql_databases:
+  - name: "{{ zbx_database_db }}"
+    encoding: utf8
+    collation: utf8_bin
+mysql_users:
+  - name: "{{ zbx_database_user }}"
+    password: "{{ zbx_database_password }}"
+    priv: "{{ zbx_database_db }}.*:ALL"
 ```
 ``` 
 ansible-playbook -i hosts zabbix.yml
