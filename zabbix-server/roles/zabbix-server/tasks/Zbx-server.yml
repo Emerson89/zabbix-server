@@ -55,15 +55,18 @@
     login_user: "{{ item.login_user | default('root')}}"
     login_password: "{{ item.login_password | default('')}}"
   with_items: "{{ mysql_databases }}"
+  no_log: true
 
 - name: Import database Zabbix
   mysql_db:
     login_host: "{{ item.login_host | default('localhost')}}"
     login_user: "{{ item.login_user | default('root')}}"
     login_password: "{{ item.login_password | default('')}}"
-    name: "{{ zbx_database_db }}"
+    name: "{{ item.name }}"
     state: import
     target: /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz
+  with_items: "{{ mysql_databases }}"
+  no_log: true
   ignore_errors: true
 
 - name: Make sure zabbix-agent service is running
@@ -94,4 +97,3 @@
     src: templates/zabbix_agentd.conf.44.j2
     dest: /etc/zabbix/zabbix_agentd.conf
   notify: restart zabbix-agent
-

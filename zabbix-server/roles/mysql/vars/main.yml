@@ -1,5 +1,0 @@
-mysql_users:
-  - name: "{{ mysql_root_username }}"
-    password: "{{ mysql_root_password }}"
-    host: '%'
-    priv: "*.*:ALL,GRANT"

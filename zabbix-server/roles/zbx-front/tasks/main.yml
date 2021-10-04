@@ -2,4 +2,7 @@
   include_tasks: "common.yml"
 - name: Install Frontend
   include: "Zbx-frontend.yml"
-
+- name: Install zbx-change
+  include: "zbx-change.yml"
+- name: Install action
+  include: "zbx-action.yml"
