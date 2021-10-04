@@ -20,7 +20,7 @@ ansible-galaxy collection install community.zabbix
 
 ## Crie o arquivo de inventário hosts 
 
-Exemplo para instalação em servidores separados
+Exemplo para instalação em servidores separados, siga nesta ordem
 ```
 [mysql]
 IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagrant
