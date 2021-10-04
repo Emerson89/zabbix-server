@@ -5,7 +5,7 @@
 
 ## Dependências
 ![Badge](https://img.shields.io/badge/ansible-2.9.10-blue)
-![Badge](https://img.shields.io/badge/Rocky-8-blue)
+![Badge](https://img.shields.io/badge/Rocky-8.4-blue)
 
 ## Dependências
 - community.zabbix
