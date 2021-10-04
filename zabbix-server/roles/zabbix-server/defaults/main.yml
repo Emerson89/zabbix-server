@@ -2,6 +2,10 @@ zabbix_version: 5.4
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_db: zabbix
 zbx_database_user: zabbix
+zbx_database_password: zabbix
+zbx_database_address: localhost
+zbx_database_port: 3306
+zbx_server_address: localhost
 url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
 zabbix_repo: zabbix
 zabbix_repo_yum:

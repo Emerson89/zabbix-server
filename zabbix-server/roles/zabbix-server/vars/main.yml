@@ -1,0 +1,16 @@
+mysql_databases:
+  - name: "{{ zbx_database_db }}"
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+    host: "{{ zbx_user_privileges }}"
+    encoding: utf8
+    collation: utf8_bin
+mysql_users:
+  - login_host: "{{ zbx_database_address }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
+    host: "{{ zbx_user_privileges }}"
+    name: "{{ zbx_database_user }}"
+    password: "{{ zbx_database_password }}"
+    priv: "{{ zbx_database_db }}.*:ALL"
