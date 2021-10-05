@@ -7,15 +7,6 @@
 ![Badge](https://img.shields.io/badge/ansible-2.9.10-blue)
 ![Badge](https://img.shields.io/badge/Rocky-8.4-blue)
 
-## Dependências
-- community.zabbix
-
-## Para Instalar: 
-
-```
-ansible-galaxy collection install community.zabbix
-```
-
 # Como Usar!!!
 
 ## Crie o arquivo de inventário hosts 
@@ -50,8 +41,6 @@ Exemplo de instalação localhost
 
 - name: Install Front
   hosts: all
-  vars:
-     pass_zabbix: SENHA-NEW-ADMIN
   become: yes
   roles:
   - zbx-front
