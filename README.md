@@ -94,7 +94,7 @@ mysql_users:
 ```
 ## Inside variáveis DB em servidores separados mysql/vars/main.yml:
 ```
-mysql_users:
+ mysql_root_users:
   - login_user: root
     login_password: " " 
     name: "{{ mysql_root_username }}"
