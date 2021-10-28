@@ -20,3 +20,5 @@
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_users }}"
   no_log: true
+  ignore_errors: true
+
