@@ -1,18 +1,18 @@
 ---
 - name: Install Banco
-  hosts: dbservers
+  hosts: db
   become: yes
   roles:
   - mysql
 
 - name: Install Zabbix Server
-  hosts: server
+  hosts: zbx
   become: yes
   roles:
   - zabbix-server
 
 - name: Install Front
-  hosts: webservers
+  hosts: web
   become: yes
   roles:
   - zbx-front
