@@ -5,6 +5,7 @@ zbx_database_user: zabbix
 zbx_database_address: localhost
 mysql_root_username: root
 mysql_root_password: root
+zbx_user_privileges: localhost
 # Database
 zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or postgresql

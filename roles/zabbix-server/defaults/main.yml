@@ -6,6 +6,9 @@ zbx_database_password: zabbix
 zbx_database_address: localhost
 zbx_database_port: 3306
 zbx_server_address: localhost
+zbx_user_privileges: localhost
+mysql_root_password: root
+mysql_root_username: root
 url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
 zabbix_repo: zabbix
 zabbix_repo_yum:

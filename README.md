@@ -11,36 +11,40 @@
 
 ## Crie o arquivo de inventário hosts 
 
-Exemplo para instalação em servidores separados, siga nesta ordem
+Exemplo para instalação em servidores separados, siga nesta ordem o padrão é localhost
 ```
-[mysql]
+[db]
 IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagrant
-[zabbix]
+[zbx]
 IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagrant
-[front]
+[web]
 IP_DESTINO ansible_ssh_private_key_file=/PATH/DESTINO/key.pem ansible_user=vagrant
 ```
 Exemplo de instalação localhost
 ```
-[zabbix-server]
+[db]
+127.0.0.1
+[zbx]
+127.0.0.1
+[web]
 127.0.0.1
 ```
-## Exemplo de playbook para instalação em localhost
+## Exemplo de playbook para instalação em localhost padrão
 ```
 - name: Install Banco
-  hosts: all
+  hosts: db
   become: yes
   roles:
   - mysql
 
 - name: Install Zabbix Server
-  hosts: all
+  hosts: zbx
   become: yes
   roles:
   - zabbix-server
 
 - name: Install Front
-  hosts: all
+  hosts: web
   become: yes
   roles:
   - zbx-front
@@ -60,7 +64,7 @@ mysql_users:
 ```
 ---
 - name: Install Banco
-  hosts: mysql
+  hosts: db
   vars:
     mysql_root_password: default123
     zbx_user_privileges: '%'
@@ -69,7 +73,7 @@ mysql_users:
   - mysql
 
 - name: Install Zabbix Server
-  hosts: zabbix
+  hosts: zbx
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_address: IP-SERVER-DATABASE
@@ -82,7 +86,7 @@ mysql_users:
   - zabbix-server
 
 - name: Install Front
-  hosts: front
+  hosts: web
   vars:
     zbx_database_address: IP-SERVER-DATABASE
     zbx_server_address: IP-SERVER-ZABBIX
