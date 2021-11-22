@@ -1,0 +1,8 @@
+mysql_databases:
+  - name: "{{ zbx_database_db }}"
+    encoding: utf8
+    collation: utf8_bin
+mysql_users:
+  - name: "{{ zbx_database_user }}"
+    password:  "{{ mysql_zabbix_pass.stdout }}"
+    priv: "{{ zbx_database_db }}.*:ALL"

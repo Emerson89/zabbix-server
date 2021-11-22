@@ -123,7 +123,7 @@ DBUser=zabbix
 # Mandatory: no
 # Default:
 # DBPassword=
-DBPassword={{ zbx_database_password }}
+DBPassword={{ mysql_zabbix_pass.stdout }}
 
 ### Option: DBSocket
 #	Path to MySQL socket.
