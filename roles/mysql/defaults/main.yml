@@ -1,4 +1,4 @@
-zabbix_version: 5.4
+zabbix_version: 4.4
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_db: zabbix
 zbx_database_user: zabbix
@@ -9,6 +9,9 @@ zbx_user_privileges: localhost
 # Database
 zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or postgresql
+zabbix_database_creation: True
+zabbix_database_sqlload: True
+
 # Databases.
 mysql_databases: []
 #   - name: example
@@ -21,3 +24,5 @@ mysql_users: []
 #     host: 127.0.0.1
 #     password: secret
 #     priv: *.*:USAGE
+
+mysql_repo: https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm

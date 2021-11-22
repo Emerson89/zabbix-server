@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+# PostgreSQL Client Authentication Configuration File
+# ===================================================
+#
+# See: https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html
+
+{% for client in postgresql_hba_entries %}
+{{ client.type }} {{ client.database }} {{ client.user }} {{ client.address|default('') }} {{ client.ip_address|default('') }} {{ client.ip_mask|default('') }} {{ client.auth_method }} {{ client.auth_options|default("") }}
+{% endfor %}
+host all zabbix {{ zbx_server_address }}/32  md5
+host all zabbix {{ zbx_front_address }}/32  md5
+host all zabbix {{ zbx_database_address }}/32  trust
+host all postgres {{ zbx_server_address }}/32  trust

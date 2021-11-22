@@ -1,4 +1,4 @@
-zabbix_version: 5.4
+zabbix_version: 4.4
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_db: zabbix
 zbx_database_user: zabbix
@@ -7,8 +7,11 @@ zbx_database_address: localhost
 zbx_database_port: 3306
 zbx_server_address: localhost
 zbx_user_privileges: localhost
-mysql_root_password: root
+mysql_zabbix_pass.stdout:
 mysql_root_username: root
+postgresql_user: postgres
+postgresql_group: postgres
+postgresql_auth_method: "{{ ansible_fips  | ternary('scram-sha-256', 'md5') }}"
 url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
 zabbix_repo: zabbix
 zabbix_repo_yum:
@@ -44,3 +47,40 @@ mysql_users: []
 #     host: 127.0.0.1
 #     password: secret
 #     priv: *.*:USAGE
+# Database
+zabbix_server_database: mysql # mysql or pgsql
+zabbix_server_database_long: mysql # mysql or pgsql
+zabbix_database_creation: True
+zabbix_database_sqlload: True
+# Databases to ensure exist.
+postgresql_databases: []
+# - name: exampledb # required; the rest are optional
+#   lc_collate: # defaults to 'en_US.UTF-8'
+#   lc_ctype: # defaults to 'en_US.UTF-8'
+#   encoding: # defaults to 'UTF-8'
+#   template: # defaults to 'template0'
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   owner: # defaults to postgresql_user
+#   state: # defaults to 'present'
+
+# Users to ensure exist.
+postgresql_users: []
+# - name: jdoe #required; the rest are optional
+#   password: # defaults to not set
+#   encrypted: # defaults to not set
+#   priv: # defaults to not set
+#   role_attr_flags: # defaults to not set
+#   db: # defaults to not set
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   state: # defaults to 'present'
+
+# Whether to output user data when managing users.
+postgres_users_no_log: true

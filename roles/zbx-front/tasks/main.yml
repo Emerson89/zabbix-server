@@ -1,4 +1,6 @@
-- name: Install common packages
-  include_tasks: "common.yml"
-- name: Install Frontend
-  include: "Zbx-frontend.yml"
+---
+- include_tasks: RedHat.yml
+  when: ansible_distribution_file_variety == 'RedHat'
+
+- include_tasks: Debian.yml
+  when: ansible_distribution_file_variety == 'Debian'

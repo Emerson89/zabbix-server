@@ -1,4 +1,4 @@
-zabbix_version: 5.4
+zabbix_version: 4.4
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_name: zabbix
 zbx_database_user: zabbix
@@ -16,12 +16,21 @@ zabbix_repo_yum:
   - name: zabbix
     description: Zabbix Official Repository - $basearch
     baseurl: http://repo.zabbix.com/zabbix/{{ zabbix_version }}/rhel/{{ ansible_distribution_major_version }}/$basearch/
+    enabled: 1 
     gpgcheck: 0
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
     state: present
+  - name: zabbix-frontend
+    description: Zabbix Official Repository - $basearch
+    file: zabbix
+    baseurl: http://repo.zabbix.com/zabbix/{{ zabbix_version }}/rhel/{{ ansible_distribution_major_version }}/$basearch/frontend
+    enabled: 0
+    gpgcheck: 0
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
   - name: zabbix-supported
     description: Zabbix Official Repository non-supported - $basearch
     baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_distribution_major_version }}/$basearch/
+    enabled: 1 
     gpgcheck: 0
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
     state: present    

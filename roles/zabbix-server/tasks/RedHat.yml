@@ -1,0 +1,113 @@
+- name: Set some fact
+  set_fact:
+    zabbix_short_version: "{{ zabbix_version | regex_replace('\\.', '') }}"
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+    
+- name: Install packages
+  yum:
+    name:
+        - epel-release
+        - net-tools
+        - vim
+        - nano
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python36
+    state: present
+
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+        - psycopg2
+        - postgres.client
+
+- name: Install MySQL-client
+  yum:
+    name: mysql
+    state: present
+
+- name: "RedHat | Set facts for Zabbix <= 5.0"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_proxy_database }}*"
+  when:
+    - zabbix_version is version_compare('5.0', '<=')
+    - ansible_distribution_major_version == '7'
+  tags:
+    - zabbix-proxy
+  
+- name: "RedHat | Set facts for Zabbix <= 5.0"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_proxy_database }}"
+  when:
+    - zabbix_version is version_compare('5.0', '<=')
+    - ansible_distribution_major_version == '8'
+  tags:
+    - zabbix-proxy
+  
+- name: "RedHat | Set facts for Zabbix >= 5.4"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_proxy_database }}"
+  when:
+    - zabbix_version is version_compare('5.4', '>=')
+  tags:
+    - zabbix-proxy
+
+- name: Install Zabbix Repo.
+  yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.baseurl }}"
+    gpgcheck: "{{ item.gpgcheck }}"
+    gpgkey: "{{ item.gpgkey }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ zabbix_repo_yum }}"
+
+- name: Install Zabbix packeges
+  yum:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-server-{{ zabbix_proxy_database }}
+    - zabbix-agent
+  when:
+   - zabbix_version <= 5.0
+
+- name: Install Zabbix packeges
+  yum:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-sql-scripts
+    - zabbix-server-{{ zabbix_proxy_database }}
+    - zabbix-agent
+  when: zabbix_version >= 5.4
+
+- name: Make sure zabbix-agent service is running
+  systemd:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+
+- name: Make sure zabbix-server service is running
+  systemd:
+    name: zabbix-server
+    state: started
+    enabled: yes   
+
+- name: Copy zabbix_server.conf template 
+  template:
+    src: templates/zabbix_server.conf.44.j2
+    dest: /etc/zabbix/zabbix_server.conf
+  notify: restart zabbix-server
+
+- name: Copy zabbix_agent.conf template 
+  template:
+    src: templates/zabbix_agentd.conf.44.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: restart zabbix-agent

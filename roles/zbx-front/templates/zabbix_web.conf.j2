@@ -29,7 +29,11 @@ server {
         }
 
         location ~ [^/]\.php(/|$) {
+                {% if zabbix_version == '5.0' and ansible_distribution_major_version == '7' %}
+                fastcgi_pass    unix:/var/opt/rh/rh-php72/run/php-fpm/zabbix.sock;
+                {% else %}
                 fastcgi_pass    unix:/var/run/php/zabbix.sock;
+                {% endif %}
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
                 fastcgi_index   index.php;
 

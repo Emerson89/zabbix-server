@@ -1,0 +1,70 @@
+---
+- name: Ensure PostgreSQL users are present.
+  postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | default(omit) }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories[0]) }}"
+    port: "{{ item.port | default(omit) }}"
+  with_items: "{{ postgresql_users }}"
+  no_log: "{{ postgres_users_no_log }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+  environment:
+    PGOPTIONS: "{{ (postgresql_auth_method == 'scram-sha-256') | ternary('-c password_encryption=scram-sha-256', '') }}"
+
+- name: Ensure PostgreSQL databases are present.
+  postgresql_db:
+    name: "{{ item.name }}"
+    lc_collate: "{{ item.lc_collate | default('en_US.UTF-8') }}"
+    lc_ctype: "{{ item.lc_ctype | default('en_US.UTF-8') }}"
+    encoding: "{{ item.encoding | default('UTF-8') }}"
+    template: "{{ item.template | default('template0') }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories[0]) }}"
+    port: "{{ item.port | default(omit) }}"
+    owner: "{{ item.owner | default(postgresql_user) }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ postgresql_databases }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: "Get the file for schema.sql"
+  shell: ls -1 {{ datafiles_path }}/schema.sql.gz
+  changed_when: False
+  when:
+    - zabbix_database_sqlload
+  register: ls_output_create
+
+- name: Import database Zabbix
+  postgresql_db:
+    login_host: "{{ item.login_host | default('localhost')}}"
+    login_user: "{{ item.login_user | default('root')}}"
+    login_password: "{{ item.login_password | default('')}}"
+    name: "{{ item.name }}"
+    state: restore
+    target: "{{ ls_output_create.stdout }}"
+  with_items: "{{ postgresql_databases }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+  no_log: true
+  ignore_errors: true

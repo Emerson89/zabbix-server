@@ -1,0 +1,190 @@
+- name: Set some fact
+  set_fact:
+    zabbix_short_version: "{{ zabbix_version | regex_replace('\\.', '') }}"
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+    
+- name: Install packages
+  yum:
+    name:
+        - epel-release
+        - net-tools
+        - vim
+        - nano
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python36
+    state: present
+
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+
+- name: Install Zabbix Repo.
+  yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.baseurl }}"
+    enabled: "{{ item.enabled }}"
+    gpgcheck: "{{ item.gpgcheck }}"
+    gpgkey: "{{ item.gpgkey }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ zabbix_repo_yum }}"
+
+- name: Enable zabbix-frontend
+  shell: yum-config-manager --enable zabbix-frontend
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Install Zabbix packeges
+  yum:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-nginx-conf-scl
+    - zabbix-web-{{ zabbix_proxy_database }}-scl
+    - zabbix-get
+    - zabbix-agent
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Install Zabbix packeges
+  yum:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-nginx-conf
+    - zabbix-web-{{ zabbix_proxy_database }}
+    - zabbix-get
+    - zabbix-agent
+  when: 
+   - ansible_distribution_major_version != '7'
+
+- name: Make sure php service is running
+  systemd:
+    name: rh-php72-php-fpm
+    state: started
+    enabled: yes
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Copy php.zabbix.conf template 
+  template:
+    src: templates/zabbix-php44.conf.j2
+    dest: /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: restart php
+  service:
+    name: rh-php72-php-fpm
+    state: restarted
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Make sure nginx service is running
+  systemd:
+    name: rh-nginx116-nginx
+    state: started
+    enabled: yes
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Copy web.zabbix.conf template 
+  template:
+    src: templates/zabbix_web.conf.j2
+    dest: /etc/opt/rh/rh-nginx116/nginx/conf.d/zabbix.conf
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Copy nginx.conf template 
+  template:
+    src: templates/nginx44.conf.j2
+    dest: /etc/opt/rh/rh-nginx116/nginx/nginx.conf
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Configure Zabbix Server Web
+  template:
+    src: zabbix.conf.j2
+    dest: /etc/zabbix/web/zabbix.conf.php
+    mode: '0644'
+  notify: restart zabbix-server 
+  when: 
+   - zabbix_version <= "5.0"
+
+- name: restart nginx
+  service:
+    name: rh-nginx116-nginx
+    state: restarted
+  when: 
+   - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
+
+- name: Make sure php service is running
+  systemd:
+    name: php-fpm
+    state: started
+    enabled: yes
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Copy php.zabbix.conf template 
+  template:
+    src: templates/zabbix-php.conf.j2
+    dest: /etc/zabbix/php-fpm.conf
+  notify: restart php
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Make sure nginx service is running
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Copy web.zabbix.conf template 
+  template:
+    src: zabbix_web.conf.j2
+    dest: /etc/zabbix/nginx.conf
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Copy nginx.conf template 
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Configure Zabbix Server Web
+  template:
+    src: zabbix.conf.j2
+    dest: /etc/zabbix/web/zabbix.conf.php
+    mode: '0644'  
+  when: 
+   - ansible_distribution_major_version == '8' 
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /etc/zabbix/web/zabbix.conf.php
+    dest: /usr/share/zabbix/conf/zabbix.conf.php
+    owner: root
+    group: root
+    state: link
+  when: 
+   - ansible_distribution_major_version == '8' 
+   - zabbix_version >= 5.4
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+  when: 
+   - ansible_distribution_major_version == '8'

@@ -1,4 +1,15 @@
-- name: Install common packages
-  include_tasks: "common.yml" 
-- name: Install Zabbix Server
-  include: "Zbx-server.yml"
+---
+- include_tasks: RedHat.yml
+  when: ansible_distribution_file_variety == 'RedHat'
+
+- include_tasks: Debian.yml
+  when: ansible_distribution_file_variety == 'Debian'
+
+- name: "Installing the database"
+  include: "{{ zabbix_server_database_long }}.yml"
+
+- name: Restart zabbix-server
+  service:
+    name: zabbix-server
+    state: restarted
+    enabled: yes

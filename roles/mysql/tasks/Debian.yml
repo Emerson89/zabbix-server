@@ -1,0 +1,87 @@
+- name: Install packages dependencies
+  apt:
+    name:
+        - net-tools
+        - vim
+        - nano
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python3
+        - python3-pip
+    state: present
+
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+    executable: pip3
+
+- name: MariaDB | Create a new pass for zabbix user
+  command: openssl rand -base64 8
+  register: mysql_zabbix_pass
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: MariaDB | Display new pass in playbook output
+  debug:
+      msg: "New zabbix pass: {{mysql_zabbix_pass.stdout}}"
+  when: 
+    - mysql_zabbix_pass.changed
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: MariaDB | Create a new pass for root user
+  command: openssl rand -base64 8
+  register: mysql_root_pass
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: MariaDB | Display new pass in playbook  output
+  debug:
+      msg: "New root pass: {{mysql_root_pass.stdout}}"
+  when: 
+    - mysql_root_pass.changed
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: MariaDB | Remove anonymous access
+  mysql_user: 
+     name: "" 
+     host: "{{ item }}" 
+     state: absent
+     login_unix_socket: /var/run/mysqld/mysqld.sock 
+  with_items:
+      - localhost
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Set Mysql root Password
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock 
+    priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default('no') }}"
+    encrypted: "{{ item.encrypted | default('no') }}"
+  with_items: "{{ mysql_root_users }}"
+  no_log: true
+  when: 
+    - mysql_root_pass.changed
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: MariaDB | Publish file .my.cnf in the root home
+  template:
+      src: user.root.my.cnf.j2
+      dest: /root/.my.cnf
+  when: 
+    - mysql_root_pass.changed
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'

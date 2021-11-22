@@ -1,0 +1,181 @@
+- name: Disable SELinux
+  selinux:
+    state: disabled
+    
+- name: Install packages
+  yum:
+    name:
+        - epel-release
+        - net-tools
+        - vim
+        - nano
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python36
+    state: present
+
+- name: Install repo MySQL
+  yum:
+    name: "{{ mysql_repo }}"
+    state: latest
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: "RedHat | Install Mysql"
+  yum:
+    name: 
+        - mysql-server
+        - MySQL-python
+    state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+    - ansible_distribution_major_version == '7'
+
+- name: Start MySQL and enable on boot
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Find MySQL temporary password 
+  shell: "grep temporary.*root@localhost /var/log/mysqld.log | sed 's/.*root@localhost: //' | tail -n 1"
+  register: mysql_root_password_temp
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Debug MySQL temporary password
+  debug: 
+    msg: "{{ mysql_root_password_temp.stdout }}"
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql' 
+
+- name: Mysql | Create a new pass for zabbix user
+  command: openssl rand -base64 8
+  register: mysql_zabbix_pass
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Mysql | Display new pass in playbook output
+  debug:
+      msg: "New zabbix pass: {{mysql_zabbix_pass.stdout}}"
+  when: 
+    - mysql_zabbix_pass.changed
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Mysql | Create a new pass for root user
+  command: openssl rand -base64 8
+  register: mysql_root_pass
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Mysql | Display new pass in playbook  output
+  debug:
+      msg: "New root pass: {{mysql_root_pass.stdout}}"
+  when: 
+    - mysql_root_pass.changed
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Set new password from temporary password
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_pass.stdout }}'');" --connect-expired-password -uroot -p"{{ mysql_root_password_temp.stdout }}"'
+  when: 
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+  ignore_errors: true
+
+- name: Create `/root/.my.cnf`  with root password credentials
+  template:
+    src:  user.root.my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    mode: 0600
+    force: yes
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'  
+
+- name: Install python packages
+  yum:
+    name:
+        - python
+        - python-pip
+    state: present
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+    executable: pip3
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+    
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+    - ansible_distribution_major_version == '8'
+
+- name: Install MySQL server
+  yum:
+    name: mysql-server
+    state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+    - ansible_distribution_major_version == '8'
+
+- name: Start MySQL and enable on boot
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+  when:
+    - ansible_distribution_major_version == '8'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+
+- name: Set Mysql root Password
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default('no') }}"
+    encrypted: "{{ item.encrypted | default('no') }}"
+  with_items: "{{ mysql_root_users }}"
+  no_log: true
+  ignore_errors: true
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_proxy_database == 'mysql'
+

@@ -1,4 +1,5 @@
-- name: Install common packages
-  include_tasks: "common.yml" 
-- name: Install Mysql
-  include: "mysql.yml"
+- include_tasks: RedHat.yml
+  when: ansible_distribution_file_variety == 'RedHat'
+
+- include_tasks: Debian.yml
+  when: ansible_distribution_file_variety == 'Debian'
