@@ -1,6 +1,6 @@
 # Instalação zabbix-server 5.4 usando ansible
 
-[![Build Status](https://app.travis-ci.com/Emerson89/zabbix-server-5.4.svg?branch=master)](https://travis-ci.com/Emerson89/zabbix-server-5.4)
+[![Build Status](https://app.travis-ci.com/Emerson89/zabbix-server-5.4.svg?branch=dev)](https://travis-ci.com/Emerson89/zabbix-server-5.4)
 
 ![Badge](https://img.shields.io/badge/ansible-zabbix-red)
 ![Badge](https://img.shields.io/badge/zabbix-5.4-red)
