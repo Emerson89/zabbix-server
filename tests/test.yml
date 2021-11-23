@@ -1,9 +1,0 @@
----
-- hosts: localhost
-  connection: local
-  become: true
-  roles:
-    - {role: ../roles/mysql}
-    - {role: ../roles/zabbix-server}
-    - {role: ../roles/zbx-front}
-    
