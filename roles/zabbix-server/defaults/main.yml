@@ -6,7 +6,7 @@ zbx_database_address: localhost
 zbx_server_address: localhost
 zbx_user_privileges: localhost
 mysql_zabbix_pass.stdout:
-mysql_root_pass: Root@!223##$
+mysql_root_pass: Tg0z64OVNzFwNA==
 mysql_root_username: root
 postgresql_user: postgres
 postgresql_group: postgres
