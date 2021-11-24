@@ -20,12 +20,35 @@
         - python36
     state: present
 
+- name: Install python packages
+  yum:
+    name:
+        - python
+        - python-pip
+    state: present
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
 - name: Install pip packages
   pip:
     name:
         - pymysql
-        - psycopg2
-        - postgres.client
+    executable: pip3
+  when:
+    - ansible_distribution_major_version == '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+    
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+  when:
+    - ansible_distribution_major_version != '7'
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
 
 - name: Install MySQL-client
   yum:
@@ -34,7 +57,7 @@
 
 - name: "RedHat | Set facts for Zabbix <= 5.0"
   set_fact:
-    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_proxy_database }}*"
+    datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}*"
   when:
     - zabbix_version is version_compare('5.0', '<=')
     - ansible_distribution_major_version == '7'
@@ -43,7 +66,7 @@
   
 - name: "RedHat | Set facts for Zabbix <= 5.0"
   set_fact:
-    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_proxy_database }}"
+    datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.0', '<=')
     - ansible_distribution_major_version == '8'
@@ -52,7 +75,7 @@
   
 - name: "RedHat | Set facts for Zabbix >= 5.4"
   set_fact:
-    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_proxy_database }}"
+    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.4', '>=')
   tags:
@@ -73,7 +96,7 @@
     name: "{{ packeges }}"
   vars:
     packeges:
-    - zabbix-server-{{ zabbix_proxy_database }}
+    - zabbix-server-{{ zabbix_server_database }}
     - zabbix-agent
   when:
    - zabbix_version <= 5.0
@@ -84,7 +107,7 @@
   vars:
     packeges:
     - zabbix-sql-scripts
-    - zabbix-server-{{ zabbix_proxy_database }}
+    - zabbix-server-{{ zabbix_server_database }}
     - zabbix-agent
   when: zabbix_version >= 5.4
 

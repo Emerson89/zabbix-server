@@ -6,7 +6,7 @@ $DB['SERVER']			= '{{ zbx_database_address }}';
 $DB['PORT']				= '{{ zbx_database_port }}';
 $DB['DATABASE']			= '{{ zbx_database_name }}';
 $DB['USER']				= '{{ zbx_database_user }}';
-$DB['PASSWORD']			= '{{ zbx_database_password }}';
+$DB['PASSWORD']			= '{{ mysql_zabbix_pass.stdout }}';
 
 // Schema name. Used for PostgreSQL.
 $DB['SCHEMA']			= '';

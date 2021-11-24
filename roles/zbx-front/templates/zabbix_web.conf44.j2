@@ -29,7 +29,7 @@ server {
         }
 
         location ~ [^/]\.php(/|$) {
-                fastcgi_pass    unix:/var/run/php/zabbix.sock;
+                fastcgi_pass    unix:/var/opt/rh/rh-php72/run/php-fpm/zabbix.sock;
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
                 fastcgi_index   index.php;
 

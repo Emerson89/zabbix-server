@@ -1,7 +1,0 @@
-mysql_root_users:
-  - login_user: root
-    login_password: " " 
-    name: "{{ mysql_root_username }}"
-    password: "{{ mysql_root_pass.stdout }}"
-    host: "{{ zbx_user_privileges }}"
-    priv: "*.*:ALL,GRANT"

@@ -20,11 +20,6 @@
         - python36
     state: present
 
-- name: Install pip packages
-  pip:
-    name:
-        - pymysql
-
 - name: Install Zabbix Repo.
   yum_repository:
     name: "{{ item.name }}"
@@ -47,7 +42,7 @@
   vars:
     packeges:
     - zabbix-nginx-conf-scl
-    - zabbix-web-{{ zabbix_proxy_database }}-scl
+    - zabbix-web-{{ zabbix_server_database }}-scl
     - zabbix-get
     - zabbix-agent
   when: 
@@ -59,7 +54,7 @@
   vars:
     packeges:
     - zabbix-nginx-conf
-    - zabbix-web-{{ zabbix_proxy_database }}
+    - zabbix-web-{{ zabbix_server_database }}
     - zabbix-get
     - zabbix-agent
   when: 
@@ -97,7 +92,7 @@
 
 - name: Copy web.zabbix.conf template 
   template:
-    src: templates/zabbix_web.conf.j2
+    src: templates/zabbix_web.conf44.j2
     dest: /etc/opt/rh/rh-nginx116/nginx/conf.d/zabbix.conf
   when: 
    - ansible_distribution_major_version == '7' and zabbix_version == "5.0"
@@ -114,10 +109,7 @@
     src: zabbix.conf.j2
     dest: /etc/zabbix/web/zabbix.conf.php
     mode: '0644'
-  notify: restart zabbix-server 
-  when: 
-   - zabbix_version <= "5.0"
-
+  
 - name: restart nginx
   service:
     name: rh-nginx116-nginx
@@ -160,14 +152,6 @@
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
-  when: 
-   - ansible_distribution_major_version == '8' 
-
-- name: Configure Zabbix Server Web
-  template:
-    src: zabbix.conf.j2
-    dest: /etc/zabbix/web/zabbix.conf.php
-    mode: '0644'  
   when: 
    - ansible_distribution_major_version == '8' 
 
