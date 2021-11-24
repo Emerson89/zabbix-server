@@ -61,8 +61,6 @@
   when:
     - zabbix_version is version_compare('5.0', '<=')
     - ansible_distribution_major_version == '7'
-  tags:
-    - zabbix-proxy
   
 - name: "RedHat | Set facts for Zabbix <= 5.0"
   set_fact:
@@ -70,16 +68,12 @@
   when:
     - zabbix_version is version_compare('5.0', '<=')
     - ansible_distribution_major_version == '8'
-  tags:
-    - zabbix-proxy
   
 - name: "RedHat | Set facts for Zabbix >= 5.4"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.4', '>=')
-  tags:
-    - zabbix-proxy
 
 - name: Install Zabbix Repo.
   yum_repository:

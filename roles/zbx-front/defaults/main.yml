@@ -2,10 +2,11 @@ zabbix_version: 5.0
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_name: zabbix
 zbx_database_user: zabbix
-mysql_zabbix_pass.stdout: 
+mysql_root_pass: Root@!223##$
 zbx_database_address: localhost
 zbx_database_port: 3306
 zbx_server_address: localhost
+mysql_zabbix_pass.stdout:
 ####Usuário console do Zabbix Server
 user_zabbix: Admin
 ####URL para acesso via api
@@ -44,8 +45,4 @@ zbx_cache_size: 256M
 zbx_value_cache_size: 256M
 # Frontend parameters
 time_zone: America/Sao_Paulo
-# Database
-zabbix_server_database: mysql # mysql or pgsql
-zabbix_server_database_long: mysql # mysql or pgsql
-zabbix_database_creation: True
-zabbix_database_sqlload: True
+

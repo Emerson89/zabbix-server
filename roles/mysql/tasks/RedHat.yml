@@ -77,25 +77,25 @@
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
 
-- name: Mysql | Create a new pass for root user
-  command: openssl rand -base64 10
-  register: mysql_root_pass
-  when:
-    - ansible_distribution_major_version == '7'
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
+#- name: Mysql | Create a new pass for root user
+#  command: openssl rand -base64 10
+#  register: mysql_root_pass
+#  when:
+#    - ansible_distribution_major_version == '7'
+#    - zabbix_database_creation or zabbix_database_sqlload
+#    - zabbix_server_database == 'mysql'
 
-- name: Mysql | Display new pass in playbook  output
-  debug:
-      msg: "New root pass: {{mysql_root_pass.stdout}}"
-  when: 
-    - mysql_root_pass.changed
-    - ansible_distribution_major_version == '7'
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
+#- name: Mysql | Display new pass in playbook  output
+#  debug:
+#      msg: "New root pass: {{mysql_root_pass.stdout}}"
+#  when: 
+#    - mysql_root_pass.changed
+#    - ansible_distribution_major_version == '7'
+#    - zabbix_database_creation or zabbix_database_sqlload
+#    - zabbix_server_database == 'mysql'
 
 - name: Set new password from temporary password
-  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_pass.stdout }}'');" --connect-expired-password -uroot -p"{{ mysql_root_password_temp.stdout }}"'
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_pass }}'');" --connect-expired-password -uroot -p"{{ mysql_root_password_temp.stdout }}"'
   when: 
     - ansible_distribution_major_version == '7'
     - zabbix_database_creation or zabbix_database_sqlload
@@ -109,7 +109,6 @@
     owner: root
     mode: 0600
     force: no
-    changed_when: false
   when:
     - ansible_distribution_major_version == '7'
     - zabbix_database_creation or zabbix_database_sqlload

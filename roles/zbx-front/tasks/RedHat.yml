@@ -163,8 +163,7 @@
     group: root
     state: link
   when: 
-   - ansible_distribution_major_version == '8' 
-   - zabbix_version >= 5.4
+   - ansible_distribution_major_version == '8' and zabbix_version >= 5.4
 
 - name: Restart nginx
   service:

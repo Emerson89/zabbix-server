@@ -1,10 +1,10 @@
 mysql_databases:
-  - name: "{{ zbx_database_db }}"
-    login_password: "{{ mysql_root_pass.stdout }}"
+  - name: "{{ zbx_database_name }}"
+    login_password: "{{ mysql_root_pass }}"
     encoding: utf8
     collation: utf8_bin
 mysql_users:
-  - login_password: "{{ mysql_root_pass.stdout }}"
+  - login_password: "{{ mysql_root_pass }}"
     name: "{{ zbx_database_user }}"
     password:  "{{ mysql_zabbix_pass.stdout }}"
-    priv: "{{ zbx_database_db }}.*:ALL"
+    priv: "{{ zbx_database_name }}.*:ALL"
