@@ -140,38 +140,33 @@
     name: php-fpm
     state: started
     enabled: yes
-  when: 
-   - ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8' 
 
 - name: Copy php.zabbix.conf template 
   template:
     src: templates/zabbix-php.conf.j2
     dest: /etc/zabbix/php-fpm.conf
   notify: restart php
-  when: 
-   - ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8' 
 
 - name: Make sure nginx service is running
   systemd:
     name: nginx
     state: started
     enabled: yes
-  when: 
-   - ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8' 
 
 - name: Copy web.zabbix.conf template 
   template:
     src: zabbix_web.conf.j2
     dest: /etc/zabbix/nginx.conf
-  when: 
-   - ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8' 
 
 - name: Copy nginx.conf template 
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
-  when: 
-   - ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8' 
 
 - name: Create a symbolic link
   ansible.builtin.file:
@@ -180,13 +175,10 @@
     owner: root
     group: root
     state: link
-  when: 
-   - ansible_distribution_major_version == '8' 
-   - zabbix_version >= '5.4'
+  when: ansible_distribution_major_version == '8' and zabbix_version >= '5.4'
 
 - name: Restart nginx
   service:
     name: nginx
     state: restarted
-  when: 
-   - ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version == '8'
