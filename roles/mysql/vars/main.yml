@@ -1,6 +1,6 @@
 mysql_root_users:
   - login_user: root
-    login_password: "{{ mysql_root_pass }}" 
+    login_password: "" 
     name: "{{ mysql_root_username }}"
     password: "{{ mysql_root_pass }}"
     host: "{{ zbx_user_privileges }}"

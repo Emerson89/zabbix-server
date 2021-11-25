@@ -21,13 +21,6 @@ zabbix_repo_yum:
     gpgcheck: 0
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
     state: present
-  - name: zabbix-frontend
-    description: Zabbix Official Repository - $basearch
-    file: zabbix
-    baseurl: http://repo.zabbix.com/zabbix/{{ zabbix_version }}/rhel/{{ ansible_distribution_major_version }}/$basearch/frontend
-    enabled: 0
-    gpgcheck: 0
-    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
   - name: zabbix-supported
     description: Zabbix Official Repository non-supported - $basearch
     baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_distribution_major_version }}/$basearch/

@@ -16,34 +16,31 @@
         - python36
     state: present
 
-
 - name: Install pip packages
   pip:
     name:
         - pymysql
-  when:
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
-    - ansible_distribution_major_version == '8'
-
+ 
 - name: Install MySQL server
   yum:
     name: mysql-server
     state: present
-  when:
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
-    - ansible_distribution_major_version == '8'
 
 - name: Start MySQL and enable on boot
   service:
     name: mysqld
     state: started
     enabled: yes
-  when:
-    - ansible_distribution_major_version == '8'
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
+
+- name: Mysql | Create a new pass for zabbix user
+  command: openssl rand -base64 10
+  register: mysql_zabbix_pass
+
+- name: Mysql | Display new pass in playbook output
+  debug:
+      msg: "New zabbix pass: {{mysql_zabbix_pass.stdout}}"
+  when: 
+    - mysql_zabbix_pass.changed
 
 - name: Set Mysql root Password
   mysql_user:
@@ -57,7 +54,11 @@
   with_items: "{{ mysql_root_users }}"
   no_log: true
   ignore_errors: true
-  when:
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
 
+- name: Create `/root/.my.cnf`  with root password credentials
+  template:
+    src:  user.root.my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    mode: 0600
+    force: no
