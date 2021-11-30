@@ -12,7 +12,6 @@
         - epel-release
         - net-tools
         - vim
-        - nano
         - wget
         - telnet
         - rsync
@@ -25,6 +24,11 @@
     name: mysql
     state: present
 
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+        
 - name: "RedHat | Set facts for Zabbix <= 5.0"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}*"

@@ -1,4 +1,4 @@
-zabbix_version: 5.0
+zabbix_version: 4.4
 zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_db: zabbix
 zbx_database_user: zabbix

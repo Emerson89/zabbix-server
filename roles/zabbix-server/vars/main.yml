@@ -8,3 +8,4 @@ mysql_users:
     name: "{{ zbx_database_user }}"
     password:  "{{ mysql_zabbix_pass.stdout }}"
     priv: "{{ zbx_database_name }}.*:ALL"
+    login_unix_socket: /var/run/mysqld/mysqld.sock

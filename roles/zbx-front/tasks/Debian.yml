@@ -1,37 +1,42 @@
+---
 - name: Set some fact
   set_fact:
     zabbix_short_version: "{{ zabbix_version | regex_replace('\\.', '') }}"
 
-- name: Disable SELinux
-  selinux:
-    state: disabled
-    
-- name: Install packages
-  yum:
-    name:
-        - epel-release
-        - net-tools
-        - vim
-        - wget
-        - telnet
-        - rsync
-        - git
-        - python36
+- name: Only run update
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Add an Apt signing key zabbix
+  apt_key:
+    url: http://repo.zabbix.com/zabbix-official-repo.key
     state: present
 
-- name: Install Zabbix Repo.
-  yum_repository:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    baseurl: "{{ item.baseurl }}"
-    enabled: "{{ item.enabled }}"
-    gpgcheck: "{{ item.gpgcheck }}"
-    gpgkey: "{{ item.gpgkey }}"
-    state: "{{ item.state | default('present') }}"
-  with_items: "{{ zabbix_repo_yum }}"
+- name: Install repo zabbix
+  apt_repository:
+    repo: "{{ item }} https://repo.zabbix.com/zabbix/{{ zabbix_version }}/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+  when: 
+   - zabbix_repo == "zabbix"
+   - ansible_distribution == "Ubuntu"
+  with_items:
+    - deb-src
+    - deb
+
+- name: Install repo zabbix
+  apt_repository:
+    repo: "{{ item }} https://repo.zabbix.com/zabbix/{{ zabbix_version }}/debian {{ ansible_distribution_release }} main"
+    state: present
+  when: 
+   - zabbix_repo == "zabbix"
+   - ansible_distribution == "Debian"
+  with_items:
+    - deb-src
+    - deb
 
 - name: Install Zabbix packeges
-  yum:
+  apt:
     name: "{{ packeges }}"
   vars:
     packeges:

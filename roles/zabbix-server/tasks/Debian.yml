@@ -1,0 +1,103 @@
+---
+- name: Set some fact
+  set_fact:
+    zabbix_short_version: "{{ zabbix_version | regex_replace('\\.', '') }}"
+
+- name: "Debian | Set facts for Zabbix <= 5.0"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_server_database }}"
+  when:
+    - zabbix_version is version_compare('5.0', '<=')
+
+- name: "Debian | Set facts for Zabbix >= 5.4"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
+  when:
+    - zabbix_version is version_compare('5.4', '>=')
+
+- name: Only run update
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Add an Apt signing key zabbix
+  apt_key:
+    url: http://repo.zabbix.com/zabbix-official-repo.key
+    state: present
+
+- name: Install repo zabbix
+  apt_repository:
+    repo: "{{ item }} https://repo.zabbix.com/zabbix/{{ zabbix_version }}/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+  when: 
+   - zabbix_repo == "zabbix"
+   - ansible_distribution == "Ubuntu"
+  with_items:
+    - deb-src
+    - deb
+
+- name: Install repo zabbix
+  apt_repository:
+    repo: "{{ item }} https://repo.zabbix.com/zabbix/{{ zabbix_version }}/debian {{ ansible_distribution_release }} main"
+    state: present
+  when: 
+   - zabbix_repo == "zabbix"
+   - ansible_distribution == "Debian"
+  with_items:
+    - deb-src
+    - deb
+
+- name: Install Zabbix packeges
+  apt:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-server-{{ zabbix_server_database }}
+    - zabbix-agent
+  when: zabbix_version is version_compare('5.0', '<=')
+
+- name: Install Zabbix packeges
+  apt:
+    name: "{{ packeges }}"
+  vars:
+    packeges:
+    - zabbix-sql-scripts
+    - zabbix-server-{{ zabbix_server_database }}
+    - zabbix-agent
+  when: zabbix_version is version_compare('5.4', '>=')
+
+- name: Install packages dependencies
+  apt:
+    name:
+        - net-tools
+        - vim
+        - wget
+        - telnet
+        - rsync
+        - git
+        - python3
+        - python3-pip
+    state: present
+
+- name: Install pip packages
+  pip:
+    name:
+        - pymysql
+    executable: pip3
+    
+- name: Make sure zabbix-agent service is running
+  systemd:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+
+- name: Copy zabbix_proxy.conf template 
+  template:
+    src: zabbix_server.conf.j2
+    dest: /etc/zabbix/zabbix_server.conf
+
+- name: Copy zabbix_agent.conf template 
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: start zabbix agent
