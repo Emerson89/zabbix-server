@@ -1,9 +1,19 @@
 [zabbix]
+{% if ansible_distribution_file_variety == "Debian" %}
+user=www-data
+group=www-data
+{% else %}
 user = apache
 group = apache
+{% endif %}
 
+{% if ansible_distribution_file_variety == "Debian" %}
+listen = /var/run/php/zabbix.sock
+listen.owner= www-data
+{% else %}
 listen = /run/php-fpm/zabbix.sock
 listen.acl_users = apache,nginx
+{% endif %}
 listen.allowed_clients = 127.0.0.1
 
 pm = dynamic
@@ -14,7 +24,11 @@ pm.max_spare_servers = 35
 pm.max_requests = 150
 
 php_value[session.save_handler] = files
+{% if ansible_distribution_file_variety == "Debian" %}
+php_value[session.save_path]    = /var/lib/php/sessions/
+{% else %}
 php_value[session.save_path]    = /var/lib/php/session
+{% endif %}
 
 php_value[max_execution_time] = 300
 php_value[memory_limit] = 128M

@@ -5,7 +5,7 @@
 
 - name: "Debian | Set facts for Zabbix <= 5.0"
   set_fact:
-    datafiles_path: "/usr/share/doc/zabbix-proxy-{{ zabbix_server_database }}"
+    datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.0', '<=')
 
@@ -91,13 +91,14 @@
     state: started
     enabled: yes
 
-- name: Copy zabbix_proxy.conf template 
+- name: Copy zabbix_server.conf template 
   template:
-    src: zabbix_server.conf.j2
+    src: zabbix_server.conf.44.j2
     dest: /etc/zabbix/zabbix_server.conf
+  notify: restart zabbix-server
 
 - name: Copy zabbix_agent.conf template 
   template:
-    src: zabbix_agentd.conf.j2
+    src: zabbix_agentd.conf.44.j2
     dest: /etc/zabbix/zabbix_agentd.conf
-  notify: start zabbix agent
+  notify: restart zabbix-agent

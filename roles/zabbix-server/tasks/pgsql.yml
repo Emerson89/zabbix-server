@@ -9,23 +9,16 @@
     login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories[0]) }}"
     port: "{{ item.port | default(omit) }}"
   with_items: "{{ postgresql_users }}"
-  no_log: "{{ postgres_users_no_log }}"
+  #no_log: "{{ postgres_users_no_log }}"
   become: true
   become_user: "{{ postgresql_user }}"
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
-  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
-  vars:
-    ansible_ssh_pipelining: true
-  environment:
-    PGOPTIONS: "{{ (postgresql_auth_method == 'scram-sha-256') | ternary('-c password_encryption=scram-sha-256', '') }}"
 
 - name: Ensure PostgreSQL databases are present.
   postgresql_db:
     name: "{{ item.name }}"
-    lc_collate: "{{ item.lc_collate | default('en_US.UTF-8') }}"
-    lc_ctype: "{{ item.lc_ctype | default('en_US.UTF-8') }}"
     encoding: "{{ item.encoding | default('UTF-8') }}"
     template: "{{ item.template | default('template0') }}"
     login_host: "{{ item.login_host | default('localhost') }}"
@@ -41,30 +34,31 @@
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
-  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
-  vars:
-    ansible_ssh_pipelining: true
 
 - name: "Get the file for schema.sql"
-  shell: ls -1 {{ datafiles_path }}/schema.sql.gz
+  shell: ls -1 {{ datafiles_path }}/create.sql.gz
   changed_when: False
   when:
     - zabbix_database_sqlload
   register: ls_output_create
 
-- name: Import database Zabbix
-  postgresql_db:
-    login_host: "{{ item.login_host | default('localhost')}}"
-    login_user: "{{ item.login_user | default('root')}}"
-    login_password: "{{ item.login_password | default('')}}"
-    name: "{{ item.name }}"
-    state: restore
-    target: "{{ ls_output_create.stdout }}"
-  with_items: "{{ postgresql_databases }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
+- name: "Get the file for timescale.sql"
+  shell: ls -1 {{ datafiles_path }}/timescaledb.sql.gz
+  changed_when: False
   when:
     - zabbix_database_sqlload
-    - zabbix_database_creation
-  no_log: true
-  ignore_errors: true
+  register: ls_output_time
+
+- name: "PostgreSQL | Importing schema file"
+  shell: >
+    zcat "{{ ls_output_create.stdout }}" | psql -h "{{ zbx_database_address }}" -U "{{ zbx_database_user }}" zabbix
+  #ignore_errors: true
+
+- name: Executando timescaledb-tune e timescaledb.sql
+  shell: |
+   echo "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;" | psql -h "{{ zbx_database_address }}" -U "{{ postgresql_user }}" zabbix
+   zcat "{{ ls_output_time.stdout }}" | psql -h "{{ zbx_database_address }}" -U "{{ zbx_database_user }}" zabbix
+  register: output
+
+- debug:
+    msg: '{{ output.stdout }}'

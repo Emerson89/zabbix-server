@@ -5,6 +5,7 @@
 - name: Disable SELinux
   selinux:
     state: disabled
+  ignore_errors: true
     
 - name: Install packages
   yum:
@@ -23,12 +24,29 @@
   yum:
     name: mysql
     state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
+- name: Install postgresql-client
+  yum:
+    name: 
+      - postgresql12
+    state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql' 
 
 - name: Install pip packages
   pip:
     name:
         - pymysql
-        
+
+- name: Install pip packages
+  pip:
+    name:
+        - psycopg2
+
 - name: "RedHat | Set facts for Zabbix <= 5.0"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}*"
@@ -40,6 +58,16 @@
     datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
+- name: "RedHat | Set facts for Zabbix >= 5.4"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_database_postgresql }}"
+  when:
+    - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
 
 - name: Install Zabbix Repo.
   yum_repository:

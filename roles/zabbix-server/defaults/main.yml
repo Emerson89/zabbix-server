@@ -3,15 +3,17 @@ zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_name: zabbix
 zbx_database_user: zabbix
 zbx_database_address: localhost
-zbx_server_address: localhost
+zbx_server_address: 127.0.0.1
 zbx_user_privileges: localhost
-mysql_zabbix_pass.stdout:
+db_zabbix_pass.stdout:
+zbx_database_port:
 mysql_root_username: root
 mysql_root_pass: Tg0z64OVNzFwNA==
 postgresql_user: postgres
 postgresql_group: postgres
-postgresql_auth_method: "{{ ansible_fips  | ternary('scram-sha-256', 'md5') }}"
 url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
+postgresql_restarted_state: "restarted"
+
 zabbix_repo: zabbix
 zabbix_repo_yum:
   - name: zabbix
@@ -47,6 +49,7 @@ mysql_users: []
 #     password: secret
 #     priv: *.*:USAGE
 # Database
+zabbix_database_postgresql: postgresql
 zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or pgsql
 zabbix_database_creation: True

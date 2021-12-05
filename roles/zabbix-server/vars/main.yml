@@ -1,11 +1,13 @@
-mysql_databases:
+postgresql_databases:
   - name: "{{ zbx_database_name }}"
-    login_password: "{{ mysql_root_pass }}"
-    encoding: utf8
-    collation: utf8_bin
-mysql_users:
-  - login_password: "{{ mysql_root_pass }}"
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
+postgresql_users:
+  - login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
     name: "{{ zbx_database_user }}"
-    password:  "{{ mysql_zabbix_pass.stdout }}"
-    priv: "{{ zbx_database_name }}.*:ALL"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    password: "{{ db_zabbix_pass.stdout }}"
+
+

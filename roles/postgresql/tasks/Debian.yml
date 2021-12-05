@@ -1,0 +1,10 @@
+---
+- name: PostgreSQL packages are installed.
+  apt:
+    name: "{{ __postgresql_packages }}"
+    state: present
+
+- name: Install pip packages
+  pip:
+    name:
+        - psycopg2

@@ -1,6 +1,7 @@
 - name: Disable SELinux
   selinux:
     state: disabled
+  ignore_errors: true
     
 - name: Install packages
   yum:
@@ -8,8 +9,8 @@
         - epel-release
         - net-tools
         - vim
-        - nano
         - wget
+        - openssl
         - telnet
         - rsync
         - git
@@ -34,13 +35,13 @@
 
 - name: Mysql | Create a new pass for zabbix user
   command: openssl rand -base64 10
-  register: mysql_zabbix_pass
+  register: db_zabbix_pass
 
 - name: Mysql | Display new pass in playbook output
   debug:
-      msg: "New zabbix pass: {{mysql_zabbix_pass.stdout}}"
+      msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
   when: 
-    - mysql_zabbix_pass.changed
+    - db_zabbix_pass.changed
 
 - name: Set Mysql root Password
   mysql_user:

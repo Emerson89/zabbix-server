@@ -41,21 +41,21 @@
   vars:
     packeges:
     - zabbix-nginx-conf
-    - zabbix-web-{{ zabbix_server_database }}
+    - zabbix-frontend-php
     - zabbix-get
     - zabbix-agent
 
 - name: Make sure php service is running
   systemd:
-    name: php-fpm
+    name: php7.3-fpm
     state: started
     enabled: yes
 
 - name: Copy php.zabbix.conf template 
   template:
     src: zabbix-php.conf.j2
-    dest: /etc/php-fpm.d/zabbix.conf
-  notify: restart php
+    dest: /etc/zabbix/php-fpm.conf
+  notify: restart php7.3
 
 - name: Make sure nginx service is running
   systemd:
@@ -73,10 +73,10 @@
     src: zabbix_web.conf.j2
     dest: /etc/nginx/conf.d/zabbix.conf
 
-- name: Copy nginx.conf template 
-  template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
+#- name: Copy nginx.conf template 
+#  template:
+#    src: nginx.conf.j2
+#    dest: /etc/nginx/nginx.conf
 
 - name: Create a symbolic link
   ansible.builtin.file:
@@ -92,4 +92,9 @@
   service:
     name: nginx
     state: restarted
- 
+
+- name: Copy zabbix_agent.conf template 
+  template:
+    src: zabbix_agentd.conf.44.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify: restart zabbix-agent

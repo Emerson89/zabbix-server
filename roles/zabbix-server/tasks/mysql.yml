@@ -12,7 +12,7 @@
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_users }}"
   when: zabbix_database_creation
-  #no_log: true
+  no_log: true
 
 - name: Create a new database for Zabbix Server
   mysql_db:
@@ -25,7 +25,7 @@
     login_password: "{{ item.login_password | default('')}}"
   with_items: "{{ mysql_databases }}"
   when: zabbix_database_creation
-  #no_log: true
+  no_log: true
 
 - name: "Get the file for schema.sql"
   shell: ls -1 {{ datafiles_path }}/create.sql.gz
@@ -46,5 +46,5 @@
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
-  #no_log: true
+  no_log: true
   ignore_errors: true

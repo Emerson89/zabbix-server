@@ -2,11 +2,19 @@
 - name: Configure global settings.
   lineinfile:
     dest: "{{ postgresql_config_path }}/postgresql.conf"
-    regexp: "^#?{{ item.option }}.+$"
-    line: "{{ item.option }} = '{{ item.value }}'"
+    regexp: "#shared_preload_libraries = ''"
+    line: "shared_preload_libraries = 'timescaledb'"
     state: "{{ item.state | default('present') }}"
-    mode: 0644
-  with_items: "{{ postgresql_global_config_options }}"
+    mode:  0600
+  notify: restart postgresql
+
+- name: Configure global settings.
+  lineinfile:
+    dest: "{{ postgresql_config_path }}/postgresql.conf"
+    regexp: "#listen_addresses = 'localhost'"
+    line: "listen_addresses = '*'"
+    state: "{{ item.state | default('present') }}"
+    mode: 0600
   notify: restart postgresql
 
 - name: Configure host based authentication (if entries are configured).
@@ -17,13 +25,3 @@
     group: "{{ postgresql_group }}"
     mode: 0600
   notify: restart postgresql
-  when: postgresql_hba_entries | length > 0
-
-- name: Ensure PostgreSQL unix socket dirs exist.
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: "{{ postgresql_user }}"
-    group: "{{ postgresql_group }}"
-    mode: "{{ postgresql_unix_socket_directories_mode }}"
-  with_items: "{{ postgresql_unix_socket_directories }}"

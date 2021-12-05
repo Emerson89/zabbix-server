@@ -1,18 +1,25 @@
  <?php
 // Zabbix GUI configuration file.
-
+{% if zabbix_server_database == "mysql" %}
 $DB['TYPE']				= 'MYSQL';
+{% else %}
+$DB['TYPE']             = 'POSTGRESQL';
+{% endif %}
 $DB['SERVER']			= '{{ zbx_database_address }}';
 $DB['PORT']				= '{{ zbx_database_port }}';
 $DB['DATABASE']			= '{{ zbx_database_name }}';
 $DB['USER']				= '{{ zbx_database_user }}';
-$DB['PASSWORD']			= '{{ mysql_zabbix_pass.stdout }}';
+$DB['PASSWORD']			= '{{ db_zabbix_pass.stdout }}';
 
 // Schema name. Used for PostgreSQL.
 $DB['SCHEMA']			= '';
 
 // Used for TLS connection.
+{% if zabbix_server_database == "mysql" %}
 $DB['ENCRYPTION']		= false;
+{% else %}
+$DB['ENCRYPTION']		= true;
+{% endif %}
 $DB['KEY_FILE']			= '';
 $DB['CERT_FILE']		= '';
 $DB['CA_FILE']			= '';

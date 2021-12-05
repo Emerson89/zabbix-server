@@ -1,0 +1,44 @@
+---
+- name: Disable SELinux
+  selinux:
+    state: disabled
+  ignore_errors: true
+
+- name: Install packages
+  yum:
+    name:
+        - epel-release
+        - openssl
+        - python3
+    state: present
+
+- name: Install Key-repo
+  rpm_key:
+    key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+
+- name: Install postgresql Repo.
+  dnf:
+   name: "{{ postgresql_enablerepo }}"
+   state: present
+
+- name: Disable package postgresql
+  command: dnf module disable postgresql -y
+
+- name: PostgreSQL packages are installed.
+  dnf:
+    name:
+      - postgresql{{ postgresql_version }}-server
+      - postgresql{{ postgresql_version }}
+      - timescaledb_{{ postgresql_version }}
+    state: present
+
+- name: PostgreSQL database is initialized.
+  command: "{{ postgresql_bin_path }} initdb"
+  ignore_errors: true
+
+- name: Install pip packages
+  pip:
+    name:
+        - psycopg2
+
+

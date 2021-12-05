@@ -14,3 +14,8 @@
   service:
     name: nginx
     state: restarted
+- name: restart postgresql
+  service:
+    name: "{{ postgresql_daemon }}"
+    state: "{{ postgresql_restarted_state }}"
+    sleep: 5

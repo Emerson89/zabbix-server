@@ -95,7 +95,11 @@ LogRemoteCommands=1
 # Default:
 # Server=
 
+{% if ansible_hostname == "127.0.0.1" %}
 Server=127.0.0.1
+{% else %}
+Server={{ zbx_server_address }}
+{% endif %}
 
 ### Option: ListenPort
 #	Agent will listen on this port for connections from the server.
@@ -136,7 +140,11 @@ Server=127.0.0.1
 # Default:
 # ServerActive=
 
+{% if ansible_hostname == "127.0.0.1" %}
 ServerActive=127.0.0.1
+{% else %}
+ServerActive={{ zbx_server_address }}
+{% endif %}
 
 ### Option: Hostname
 #	Unique, case sensitive hostname.
@@ -147,7 +155,11 @@ ServerActive=127.0.0.1
 # Default:
 # Hostname=
 
+{% if ansible_hostname == "127.0.0.1" %}
 Hostname=Zabbix server
+{% else %}
+Hostname={{ ansible_hostname }}
+{% endif %}
 
 ### Option: HostnameItem
 #	Item used for generating Hostname if it is undefined. Ignored if Hostname is defined.

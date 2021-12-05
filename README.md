@@ -66,7 +66,6 @@ mysql_users:
 - name: Install Banco
   hosts: db
   vars:
-    mysql_root_password: default123
     zbx_user_privileges: '%'
   become: yes
   roles:
@@ -77,10 +76,7 @@ mysql_users:
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_address: IP-SERVER-DATABASE
-    zbx_database_password: PASSWORD-DB_ZABBIX
     zbx_user_privileges: '%'
-    mysql_root_username: root
-    mysql_root_password: default123
   become: yes
   roles:
   - zabbix-server
@@ -91,7 +87,6 @@ mysql_users:
     zbx_database_address: IP-SERVER-DATABASE
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_port: 3306
-    zbx_database_password: PASSWORD-DB_ZABBIX
   become: yes
   roles:
   - zbx-front

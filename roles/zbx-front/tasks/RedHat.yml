@@ -5,7 +5,11 @@
 - name: Disable SELinux
   selinux:
     state: disabled
-    
+  ignore_errors: true
+
+- name: Install zabbix community
+  shell: ansible-galaxy collection install community.zabbix
+  
 - name: Install packages
   yum:
     name:

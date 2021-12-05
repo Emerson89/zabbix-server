@@ -19,32 +19,16 @@
 
 - name: MariaDB | Create a new pass for zabbix user
   command: openssl rand -base64 8
-  register: mysql_zabbix_pass
+  register: db_zabbix_pass
   when:
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
 
 - name: MariaDB | Display new pass in playbook output
   debug:
-      msg: "New zabbix pass: {{mysql_zabbix_pass.stdout}}"
+      msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
   when: 
-    - mysql_zabbix_pass.changed
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
-
-- name: Set Mysql root Password
-  mysql_user:
-    name: "{{ item.name }}"
-    host: "{{ item.host | default('localhost') }}"
-    password: "{{ item.password }}"
-    login_unix_socket: /var/run/mysqld/mysqld.sock 
-    priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
-    state: "{{ item.state | default('present') }}"
-    append_privs: "{{ item.append_privs | default('no') }}"
-    encrypted: "{{ item.encrypted | default('no') }}"
-  with_items: "{{ mysql_root_users }}"
-  #no_log: true
-  when: 
+    - db_zabbix_pass.changed
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
 
@@ -58,3 +42,22 @@
   when: 
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
+
+- name: Set Mysql root Password
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    login_unix_socket: "{{ item.login_unix_socket | default('') }}" 
+    priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default('no') }}"
+    encrypted: "{{ item.encrypted | default('no') }}"
+  with_items: "{{ mysql_root_users }}"
+  #no_log: true
+  #ignore_errors: true
+  when: 
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
+
