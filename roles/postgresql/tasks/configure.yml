@@ -7,7 +7,7 @@
     state: "{{ item.state | default('present') }}"
     mode:  0600
   notify: restart postgresql
-
+  
 - name: Configure global settings.
   lineinfile:
     dest: "{{ postgresql_config_path }}/postgresql.conf"

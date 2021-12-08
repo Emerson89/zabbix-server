@@ -5,6 +5,7 @@
     login_password: "{{ item.login_password | default('')}}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost') }}"
+    login_unix_socket: "{{ item.login_unix_socket | default('/var/run/mysqld/mysqld.sock') }}"
     password: "{{ item.password }}"
     priv: "{{ item.priv | default('*.*:USAGE') }}"
     state: "{{ item.state | default('present') }}"
@@ -47,4 +48,4 @@
     - zabbix_database_sqlload
     - zabbix_database_creation
   no_log: true
-  ignore_errors: true
+  #ignore_errors: true

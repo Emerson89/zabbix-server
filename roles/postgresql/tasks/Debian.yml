@@ -1,10 +1,75 @@
 ---
-- name: PostgreSQL packages are installed.
+- name: Only run update
   apt:
-    name: "{{ __postgresql_packages }}"
+    update_cache: yes
+    upgrade: yes
+
+- name: Install packages dependencies
+  apt:
+    name: 
+        - gpg
+        - dirmngr
+        - python3
+        - python3-pip
+        - libpq-dev
+        - python3-dev
     state: present
 
 - name: Install pip packages
   pip:
     name:
         - psycopg2
+
+#- name: Set variables languages
+#  shell: |
+#    export LC_CTYPE=en_US.UTF-8
+#    export LC_ALL=en_US.UTF-8
+#  when: 
+#   - ansible_distribution == 'Debian'
+
+- name: Add an Apt signing key postgresql
+  apt_key:
+    url: "{{ __postgresql_key }}"
+    state: present
+  when: 
+   - ansible_distribution == 'Debian'
+
+- name: Add an Apt signing key timescaledb    
+  apt_key:
+    url: "{{ __postgresql_key_time }}"
+    state: present
+  when: 
+   - ansible_distribution == 'Debian'
+
+- name: Install repo postgresql
+  apt_repository:
+    repo: "{{ __postgresql_repo }}"
+    state: present
+    update_cache: true
+  when: 
+   - ansible_distribution == 'Debian'
+
+- name: Install repo timescaledb
+  apt_repository:
+    repo: "{{ __timescaledb_repo }}"
+    state: present
+    update_cache: true
+
+- name: PostgreSQL packages are installed.
+  apt:
+    name: "{{ __postgresql_packages }}"
+    state: present
+
+- name: Executando timescaledb-tune
+  shell: |
+   timescaledb-tune --quiet --yes
+  notify: restart postgresql
+
+- name: Aumentando max_connections
+  lineinfile:
+    dest: "{{ postgresql_config_path }}/postgresql.conf"
+    regexp: '^max_connections '
+    insertafter: '^#max_connections'
+    line: max_connections = 50
+  notify: restart postgresql
+ 

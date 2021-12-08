@@ -11,6 +11,17 @@
         - python3-pip
     state: present
 
+- name: Install mariadb-server
+  apt:
+    name: 
+        - mariadb-server
+
+- name: Make sure mariadb service is running
+  systemd:
+    name: mariadb
+    state: started
+    enabled: yes  
+
 - name: Install pip packages
   pip:
     name:
@@ -20,17 +31,12 @@
 - name: MariaDB | Create a new pass for zabbix user
   command: openssl rand -base64 8
   register: db_zabbix_pass
-  when:
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
 
 - name: MariaDB | Display new pass in playbook output
   debug:
       msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
   when: 
     - db_zabbix_pass.changed
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
 
 - name: MariaDB | Publish file .my.cnf in the root home
   template:
@@ -39,16 +45,13 @@
       owner: root
       mode: 0600
       force: no
-  when: 
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
 
 - name: Set Mysql root Password
   mysql_user:
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost') }}"
     password: "{{ item.password }}"
-    login_unix_socket: "{{ item.login_unix_socket | default('') }}" 
+    login_unix_socket: "{{ item.login_unix_socket | default('/var/run/mysqld/mysqld.sock') }}" 
     priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
     state: "{{ item.state | default('present') }}"
     append_privs: "{{ item.append_privs | default('no') }}"
@@ -56,8 +59,4 @@
   with_items: "{{ mysql_root_users }}"
   #no_log: true
   #ignore_errors: true
-  when: 
-    - zabbix_database_creation or zabbix_database_sqlload
-    - zabbix_server_database == 'mysql'
-
 

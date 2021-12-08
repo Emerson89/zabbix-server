@@ -6,8 +6,11 @@ zbx_database_address: 127.0.0.1
 zbx_user_privileges: localhost
 zbx_database_name: zabbix
 zbx_database_user: zabbix
-postgres_zabbix_pass.stdout:
+db_zabbix_pass.stdout:
 
+postgresql_locales:
+  - 'en_US.UTF-8'
+  
 # RHEL/CentOS only. Set a repository to use for PostgreSQL installation.
 postgresql_enablerepo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
@@ -15,15 +18,16 @@ postgresql_enablerepo: https://download.postgresql.org/pub/repos/yum/reporpms/EL
 # `restarted` or `reloaded`
 postgresql_restarted_state: "restarted"
 
-postgresql_python_library: python-psycopg2
 postgresql_user: postgres
 postgresql_group: postgres
 
-postgresql_unix_socket_directories:
-  - /var/run/postgresql
+postgresql_unix_socket_directories: /var/run/postgresql
 
 postgresql_service_state: started
 postgresql_service_enabled: true
+
+repo_postgresql: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
+repo_timescaledb: deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main
 
 # Databases to ensure exist.
 postgresql_databases: []

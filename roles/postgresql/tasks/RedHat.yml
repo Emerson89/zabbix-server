@@ -10,7 +10,20 @@
         - epel-release
         - openssl
         - python3
+        - python3-pip
     state: present
+
+- name: Update pip packages
+  pip:
+    name:
+        - setuptools
+        - pip
+    state: latest
+
+- name: Install pip packages
+  pip:
+    name:
+        - psycopg2
 
 - name: Install Key-repo
   rpm_key:
@@ -36,9 +49,5 @@
   command: "{{ postgresql_bin_path }} initdb"
   ignore_errors: true
 
-- name: Install pip packages
-  pip:
-    name:
-        - psycopg2
 
 

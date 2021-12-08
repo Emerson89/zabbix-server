@@ -7,13 +7,23 @@
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}"
   when:
-    - zabbix_version is version_compare('5.0', '<=')
+    - zabbix_version is version_compare('5.2', '<=')
 
 - name: "Debian | Set facts for Zabbix >= 5.4"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
   when:
     - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
+- name: "RedHat | Set facts for Zabbix >= 5.4"
+  set_fact:
+    datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_database_postgresql }}"
+  when:
+    - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
 
 - name: Only run update
   apt:
@@ -54,7 +64,7 @@
     packeges:
     - zabbix-server-{{ zabbix_server_database }}
     - zabbix-agent
-  when: zabbix_version is version_compare('5.0', '<=')
+  when: zabbix_version is version_compare('5.2', '<=')
 
 - name: Install Zabbix packeges
   apt:
@@ -84,6 +94,11 @@
     name:
         - pymysql
     executable: pip3
+
+- name: Install pip packages
+  pip:
+    name:
+        - psycopg2
     
 - name: Make sure zabbix-agent service is running
   systemd:
@@ -102,3 +117,9 @@
     src: zabbix_agentd.conf.44.j2
     dest: /etc/zabbix/zabbix_agentd.conf
   notify: restart zabbix-agent
+
+- name: Stop zabbix-server
+  systemd:
+    name: zabbix-server
+    state: stopped
+  

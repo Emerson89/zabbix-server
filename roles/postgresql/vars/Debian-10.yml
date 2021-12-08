@@ -1,0 +1,15 @@
+---
+__postgresql_version: "12"
+__postgresql_data_dir: "/var/lib/postgresql/{{ __postgresql_version }}/main"
+__postgresql_bin_path: "/usr/lib/postgresql/{{ __postgresql_version }}/bin"
+__postgresql_config_path: "/etc/postgresql/{{ __postgresql_version }}/main"
+__postgresql_daemon: "postgresql@{{ __postgresql_version }}-main"
+__postgresql_key: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+__postgresql_key_time: "https://packagecloud.io/timescale/timescaledb/gpgkey"
+__postgresql_repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+__timescaledb_repo: "deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main"
+__postgresql_packages:
+  - postgresql-{{ __postgresql_version }}
+  - postgresql-contrib
+  - libpq-dev
+  - timescaledb-2-postgresql-{{ __postgresql_version }}

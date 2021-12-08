@@ -45,17 +45,38 @@
     - zabbix-get
     - zabbix-agent
 
-- name: Make sure php service is running
-  systemd:
-    name: php7.3-fpm
-    state: started
-    enabled: yes
+- name: Ubuntu | Install Zabbix packeges
+  apt:
+    name: php7.4-pgsql
+  when:
+    - ansible_distribution == 'Ubuntu'
+
+- name: Debian | Install Zabbix packeges
+  apt:
+    name: php7.3-pgsql
+  when:
+    - ansible_distribution == "Debian"
 
 - name: Copy php.zabbix.conf template 
   template:
     src: zabbix-php.conf.j2
     dest: /etc/zabbix/php-fpm.conf
-  notify: restart php7.3
+
+- name: Make sure php service is running
+  systemd:
+    name: php7.3-fpm
+    state: restarted
+    enabled: yes
+  when:
+    - ansible_distribution == "Debian"
+
+- name: Make sure php service is running
+  systemd:
+    name: php7.4-fpm
+    state: restarted
+    enabled: yes
+  when:
+    - ansible_distribution == "Ubuntu"
 
 - name: Make sure nginx service is running
   systemd:
@@ -72,11 +93,6 @@
   template:
     src: zabbix_web.conf.j2
     dest: /etc/nginx/conf.d/zabbix.conf
-
-#- name: Copy nginx.conf template 
-#  template:
-#    src: nginx.conf.j2
-#    dest: /etc/nginx/nginx.conf
 
 - name: Create a symbolic link
   ansible.builtin.file:

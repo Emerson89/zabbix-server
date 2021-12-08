@@ -7,11 +7,6 @@ zbx_database_address: localhost
 zbx_database_port: 3306
 zbx_server_address: localhost
 db_zabbix_pass.stdout:
-####Usuário console do Zabbix Server
-user_zabbix: Admin
-pass_zabbix: zabbix2
-####URL para acesso via api
-url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
 #####Adicionado repo zabbix
 zabbix_repo: zabbix
 zabbix_repo_yum:

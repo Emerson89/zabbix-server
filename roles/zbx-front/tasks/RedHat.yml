@@ -7,9 +7,6 @@
     state: disabled
   ignore_errors: true
 
-- name: Install zabbix community
-  shell: ansible-galaxy collection install community.zabbix
-  
 - name: Install packages
   yum:
     name:
@@ -20,7 +17,7 @@
         - telnet
         - rsync
         - git
-        - python36
+        - python3
     state: present
 
 - name: Install Zabbix Repo.

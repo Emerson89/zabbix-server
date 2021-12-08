@@ -54,7 +54,6 @@
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_root_users }}"
   no_log: true
-  ignore_errors: true
 
 - name: Create `/root/.my.cnf`  with root password credentials
   template:

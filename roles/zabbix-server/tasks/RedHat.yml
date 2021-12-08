@@ -47,11 +47,11 @@
     name:
         - psycopg2
 
-- name: "RedHat | Set facts for Zabbix <= 5.0"
+- name: "RedHat | Set facts for Zabbix <= 5.2"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-server-{{ zabbix_server_database }}*"
   when:
-    - zabbix_version is version_compare('5.0', '<=')
+    - zabbix_version is version_compare('5.2', '<=')
   
 - name: "RedHat | Set facts for Zabbix >= 5.4"
   set_fact:
@@ -86,7 +86,7 @@
     packeges:
     - zabbix-server-{{ zabbix_server_database }}
     - zabbix-agent
-  when: zabbix_version is version_compare('5.0', '<=')
+  when: zabbix_version is version_compare('5.2', '<=')
 
 - name: Install Zabbix packeges
   yum:

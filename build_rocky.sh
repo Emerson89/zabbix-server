@@ -1,19 +1,16 @@
 #!/bin/bash
 
 DOCKER_CONTAINER_NAME="rocky"
-DOCKER_IMAGE="rocky8"
+DOCKER_IMAGE="emr001/rocky-emr"
 INIT=/usr/lib/systemd/systemd
 RUN_OPTS="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"  
-
-docker build -t $DOCKER_IMAGE --rm=true --file=tests/Dockerfile.$DOCKER_CONTAINER_NAME tests
 
 docker run -ti $RUN_OPTS --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro -p 8080:80 --name $DOCKER_CONTAINER_NAME $DOCKER_IMAGE $INIT
 
 docker exec $DOCKER_CONTAINER_NAME ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --extra-vars "zabbix_version=5.0 zbx_database_port=5432 zabbix_server_database_long=pgsql zabbix_server_database=pgsql"
 
-#docker exec -it $DOCKER_CONTAINER_NAME /bin/bash
+docker exec -it $DOCKER_CONTAINER_NAME /bin/bash
+
 docker stop $DOCKER_CONTAINER_NAME
 
 docker rm $DOCKER_CONTAINER_NAME
-
-docker rmi $DOCKER_IMAGE

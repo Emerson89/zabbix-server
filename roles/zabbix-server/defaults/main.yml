@@ -11,8 +11,8 @@ mysql_root_username: root
 mysql_root_pass: Tg0z64OVNzFwNA==
 postgresql_user: postgres
 postgresql_group: postgres
-url_zabbix_api: http://{{ ansible_ssh_host }}/api_jsonrpc.php
 postgresql_restarted_state: "restarted"
+postgresql_unix_socket_directories: /var/run/postgresql
 
 zabbix_repo: zabbix
 zabbix_repo_yum:

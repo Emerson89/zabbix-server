@@ -120,6 +120,19 @@ mysql_users:
     password: "{{ zbx_database_password }}"
     priv: "{{ zbx_database_db }}.*:ALL"
 ```
+## Postgresql vars
+postgresql_databases:
+  - name: "{{ zbx_database_name }}"
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
+postgresql_users:
+  - login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
+    name: "{{ zbx_database_user }}"
+    password: "{{ db_zabbix_pass.stdout }}"
+    
 ``` 
 ansible-playbook -i hosts zabbix.yml
 
