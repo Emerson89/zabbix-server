@@ -112,6 +112,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   - zbx-front
 ```
 ## Exemplo de playbook para instalação em servidores separados postgresql
+```
 ---
 - name: Install Banco postgresql
   hosts: db
