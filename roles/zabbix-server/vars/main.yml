@@ -1,25 +1,10 @@
 ## Database vars PGSQL
-postgresql_databases:
-  - name: "{{ zbx_database_name }}"
-    login_host: "{{ zbx_database_address }}"
-    login_user: "{{ postgresql_user }}"
-    login_password: ""
+
 postgresql_databases_import:
   - name: "{{ zbx_database_name }}"
     login_host: "{{ zbx_database_address }}"
     login_user: "{{ zbx_database_user }}"
     login_password: ""
-postgresql_timescale:
-  - name: timescaledb
-    login_host: "{{ zbx_database_address }}"
-    login_user: "{{ postgresql_user }}"
-    login_password: ""
-postgresql_users:
-  - login_host: "{{ zbx_database_address }}"
-    login_user: "{{ postgresql_user }}"
-    login_password: ""
-    name: "{{ zbx_database_user }}"
-    password: "{{ db_zabbix_pass.stdout }}"
 
 ## Database vars MYSQL
 mysql_databases:
@@ -31,10 +16,11 @@ mysql_databases:
     encoding: utf8
     collation: utf8_bin
 mysql_users:
-  - login_host: "{{ zbx_database_address }}"
-    login_user: "{{ mysql_root_username }}"
+  - login_user: "{{ mysql_root_username }}"
     login_password: "{{ mysql_root_pass }}"
+    login_host: "{{ zbx_database_address }}"
+    login_unix_socket: ""
     host: "{{ zbx_user_privileges }}"
     name: "{{ zbx_database_user }}"
-    password: "{{ db_zabbix_pass.stdout }}"
+    password: "{{ db_zabbix_pass }}"
     priv: "{{ zbx_database_name }}.*:ALL"

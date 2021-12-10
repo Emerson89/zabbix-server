@@ -51,8 +51,12 @@
   template:
     src: zabbix-php.conf.j2
     dest: /etc/php-fpm.d/zabbix.conf
-  notify: restart php
 
+- name: restart php
+  service:
+    name: php-fpm
+    state: restarted
+    
 - name: Make sure nginx service is running
   systemd:
     name: nginx

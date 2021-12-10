@@ -17,7 +17,7 @@
     mode: 0600
   notify: restart postgresql
 
-- name: Configure host based authentication (if entries are configured).
+- name: Configure host based authentication
   template:
     src: "pg_hba.conf.j2"
     dest: "{{ postgresql_config_path }}/pg_hba.conf"

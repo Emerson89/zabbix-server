@@ -1,0 +1,18 @@
+postgresql_databases:
+  - name: "{{ zbx_database_name }}"
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
+
+postgresql_users:
+  - login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""
+    name: "{{ zbx_database_user }}"
+    password: "{{ db_zabbix_pass }}"
+
+postgresql_timescale:
+  - name: timescaledb
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ postgresql_user }}"
+    login_password: ""

@@ -49,13 +49,13 @@
   apt:
     name: php7.4-pgsql
   when:
-    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution == 'Ubuntu' and zabbix_server_database == 'pgsql'
 
 - name: Debian | Install Zabbix packeges
   apt:
     name: php7.3-pgsql
   when:
-    - ansible_distribution == "Debian"
+    - ansible_distribution == 'Debian' and zabbix_server_database == 'pgsql'
 
 - name: Copy php.zabbix.conf template 
   template:

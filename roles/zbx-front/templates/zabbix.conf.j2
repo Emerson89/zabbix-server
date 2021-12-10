@@ -6,10 +6,14 @@ $DB['TYPE']				= 'MYSQL';
 $DB['TYPE']             = 'POSTGRESQL';
 {% endif %}
 $DB['SERVER']			= '{{ zbx_database_address }}';
-$DB['PORT']				= '{{ zbx_database_port }}';
+{% if zabbix_server_database == "mysql" %}
+$DB['PORT']				= '3306';
+{% else %}
+$DB['PORT']             = '5432';
+{% endif %}
 $DB['DATABASE']			= '{{ zbx_database_name }}';
 $DB['USER']				= '{{ zbx_database_user }}';
-$DB['PASSWORD']			= '{{ db_zabbix_pass.stdout }}';
+$DB['PASSWORD']			= '{{ db_zabbix_pass }}';
 
 // Schema name. Used for PostgreSQL.
 $DB['SCHEMA']			= '';

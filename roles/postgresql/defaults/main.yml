@@ -3,10 +3,11 @@ zbx_server_address: 127.0.0.1
 zbx_front_address: 127.0.0.1
 zbx_database_address: 127.0.0.1
 
-zbx_user_privileges: localhost
+zabbix_database_creation: True
+zabbix_database_sqlload: True
+db_zabbix_pass: Tg0z64OVNzFwNA==
 zbx_database_name: zabbix
 zbx_database_user: zabbix
-db_zabbix_pass.stdout:
 
 postgresql_locales:
   - 'en_US.UTF-8'
@@ -25,9 +26,6 @@ postgresql_unix_socket_directories: /var/run/postgresql
 
 postgresql_service_state: started
 postgresql_service_enabled: true
-
-repo_postgresql: deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main
-repo_timescaledb: deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main
 
 # Databases to ensure exist.
 postgresql_databases: []

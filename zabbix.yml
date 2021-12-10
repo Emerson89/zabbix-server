@@ -1,9 +1,9 @@
 ---
-- name: Install Banco
-  hosts: zabbix
+- name: Install Banco mysql
+  hosts: zabbix   
   become: true
   roles:
-  - postgresql
+  - mysql
 
 - name: Install Zabbix Server
   hosts: zabbix

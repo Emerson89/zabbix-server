@@ -1,44 +1,4 @@
 ---
-- name: Ensure PostgreSQL users are present.
-  postgresql_user:
-    name: "{{ item.name }}"
-    password: "{{ item.password | default(omit) }}"
-    login_host: "{{ item.login_host | default('localhost') }}"
-    login_password: "{{ item.login_password | default(omit) }}"
-    login_user: "{{ item.login_user | default(postgresql_user) }}"
-    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories) }}"
-    port: "{{ item.port | default(omit) }}"
-  with_items: "{{ postgresql_users }}"
-  #no_log: "{{ postgres_users_no_log }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  when:
-    - zabbix_database_sqlload
-    - zabbix_database_creation
-
-- name: Ensure PostgreSQL databases are present.
-  postgresql_db:
-    name: "{{ item.name }}"
-    encoding: "{{ item.encoding | default('UTF-8') }}"
-    template: "{{ item.template | default('template0') }}"
-    login_host: "{{ item.login_host | default('localhost') }}"
-    login_password: "{{ item.login_password | default(omit) }}"
-    login_user: "{{ item.login_user | default(postgresql_user) }}"
-    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories) }}"
-    port: "{{ item.port | default(omit) }}"
-    owner: "{{ item.owner | default(postgresql_user) }}"
-    state: "{{ item.state | default('present') }}"
-  with_items: "{{ postgresql_databases }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  when:
-    - zabbix_database_sqlload
-    - zabbix_database_creation
-
 - name: "Get the file for schema.sql"
   shell: ls -1 {{ datafiles_path }}/create.sql.gz
   changed_when: False
@@ -62,7 +22,7 @@
     - ansible_distribution_file_variety == 'Debian'
   register: ls_output_deb
 
-- name: Import Schema zabbix.
+- name: Import Schema zabbix
   postgresql_db:
     name: "{{ item.name }}"
     login_host: "{{ item.login_host | default('localhost') }}"
@@ -83,38 +43,7 @@
     - zabbix_database_creation
   ignore_errors: true
 
-#- name: "PostgreSQL | Importing schema file"
-#  shell: |
-#    zcat "{{ ls_output_create.stdout }}" | psql -h "{{ zbx_database_address }}" -U "{{ zbx_database_user }}" zabbix
-
-#- name: RedHat | Executando timescaledb-tune e timescaledb.sql
-#  shell: |
-#   echo "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;" | psql -h "{{ zbx_database_address }}" -U "{{ postgresql_user }}" zabbix
-#   zcat "{{ ls_output_red.stdout }}" | psql -h "{{ zbx_database_address }}" -U "{{ zbx_database_user }}" zabbix
-#  when:
-#    - zabbix_database_sqlload
-#    - ansible_distribution_file_variety == 'RedHat'
-
-- name: TIMESCALEDB | Create timescaledb extension
-  postgresql_ext:
-    name: "{{ item.name }}"
-    login_host: "{{ item.login_host | default('localhost') }}"
-    login_password: "{{ item.login_password | default(omit) }}"
-    login_user: "{{ item.login_user | default(postgresql_user) }}"
-    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories) }}"
-    port: "{{ item.port | default(omit) }}"
-    db: zabbix
-    cascade: yes
-  with_items: "{{ postgresql_timescale }}"
-  become: true
-  become_user: "{{ postgresql_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  when:
-    - zabbix_database_sqlload
-    - zabbix_database_creation
-
-- name: RedHat | Import Schema timescaledb.
+- name: RedHat | Import Schema timescaledb
   postgresql_db:
     name: "{{ item.name }}"
     login_host: "{{ item.login_host | default('localhost') }}"
@@ -135,15 +64,7 @@
     - zabbix_database_creation
     - ansible_distribution_file_variety == 'RedHat'
 
-#- name: Debian | Executando timescaledb-tune e timescaledb.sql
-#  shell: |
-#   echo "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;" | psql -h "{{ zbx_database_address }}" -U "{{ postgresql_user }}" zabbix
-#   cat "{{ ls_output_deb.stdout }}" | psql -h "{{ zbx_database_address }}" -U "{{ zbx_database_user }}" zabbix
-#  when:
-#    - zabbix_database_sqlload
-#    - ansible_distribution_file_variety == 'Debian'
-
-- name: Debian | Import Schema timescaledb.
+- name: Debian | Import Schema timescaledb
   postgresql_db:
     name: "{{ item.name }}"
     login_host: "{{ item.login_host | default('localhost') }}"

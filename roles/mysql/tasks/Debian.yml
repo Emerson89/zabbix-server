@@ -4,9 +4,6 @@
         - net-tools
         - vim
         - wget
-        - telnet
-        - rsync
-        - git
         - python3
         - python3-pip
     state: present
@@ -28,16 +25,6 @@
         - pymysql
     executable: pip3
 
-- name: MariaDB | Create a new pass for zabbix user
-  command: openssl rand -base64 8
-  register: db_zabbix_pass
-
-- name: MariaDB | Display new pass in playbook output
-  debug:
-      msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
-  when: 
-    - db_zabbix_pass.changed
-
 - name: MariaDB | Publish file .my.cnf in the root home
   template:
       src: user.root.my.cnf.j2
@@ -57,6 +44,6 @@
     append_privs: "{{ item.append_privs | default('no') }}"
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_root_users }}"
-  #no_log: true
-  #ignore_errors: true
+  no_log: true
+  ignore_errors: true
 

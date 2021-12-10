@@ -81,10 +81,11 @@
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
-local   all             all                                     peer
+local   all             all                                     trust
 # IPv4 local connections:
-host    all             zabbix {{ zbx_server_address }}/32      trust
+host    all             zabbix {{ zbx_server_address }}/32     trust
 host    all             zabbix {{ zbx_front_address }}/32      md5
+host    all             all {{ zbx_server_address }}/32     trust
 host    all             all             127.0.0.1/32            trust
 # IPv6 local connections:
 host    all             all             ::1/128                 md5

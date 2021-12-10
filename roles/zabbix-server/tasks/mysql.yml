@@ -1,3 +1,16 @@
+- name: Create a new database for Zabbix Server
+  mysql_db:
+    name: "{{ item.name }}"
+    collation: "{{ item.collation | default('utf8_general_ci') }}"
+    encoding: "{{ item.encoding | default('utf8') }}"
+    state: "{{ item.state | default('present') }}"
+    login_host: "{{ item.login_host | default('localhost')}}"
+    login_user: "{{ item.login_user | default('root')}}"
+    login_password: "{{ item.login_password | default('')}}"
+  with_items: "{{ mysql_databases }}"
+  when: zabbix_database_creation
+  no_log: true
+
 - name: Create Zabbix server MySQL user
   mysql_user:
     login_host: "{{ item.login_host | default('localhost')}}"
@@ -12,19 +25,6 @@
     append_privs: "{{ item.append_privs | default('no') }}"
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_users }}"
-  when: zabbix_database_creation
-  no_log: true
-
-- name: Create a new database for Zabbix Server
-  mysql_db:
-    name: "{{ item.name }}"
-    collation: "{{ item.collation | default('utf8_general_ci') }}"
-    encoding: "{{ item.encoding | default('utf8') }}"
-    state: "{{ item.state | default('present') }}"
-    login_host: "{{ item.login_host | default('localhost')}}"
-    login_user: "{{ item.login_user | default('root')}}"
-    login_password: "{{ item.login_password | default('')}}"
-  with_items: "{{ mysql_databases }}"
   when: zabbix_database_creation
   no_log: true
 
@@ -48,4 +48,4 @@
     - zabbix_database_sqlload
     - zabbix_database_creation
   no_log: true
-  #ignore_errors: true
+  ignore_errors: true

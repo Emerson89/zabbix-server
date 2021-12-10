@@ -4,9 +4,8 @@ zbx_database_name: zabbix
 zbx_database_user: zabbix
 mysql_root_pass: Tg0z64OVNzFwNA==
 zbx_database_address: localhost
-zbx_database_port: 3306
 zbx_server_address: localhost
-db_zabbix_pass.stdout:
+db_zabbix_pass: Tg0z64OVNzFwNA==
 #####Adicionado repo zabbix
 zabbix_repo: zabbix
 zabbix_repo_yum:
@@ -36,6 +35,3 @@ zbx_value_cache_size: 256M
 time_zone: America/Sao_Paulo
 # Database
 zabbix_server_database: mysql # mysql or pgsql
-zabbix_server_database_long: mysql # mysql or pgsql
-zabbix_database_creation: True
-zabbix_database_sqlload: True

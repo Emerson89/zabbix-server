@@ -8,13 +8,10 @@
     name:
         - epel-release
         - net-tools
-        - vim
-        - wget
         - openssl
         - telnet
-        - rsync
-        - git
-        - python36
+        - python3
+        - python3-pip
     state: present
 
 - name: Install pip packages
@@ -33,20 +30,10 @@
     state: started
     enabled: yes
 
-- name: Mysql | Create a new pass for zabbix user
-  command: openssl rand -base64 10
-  register: db_zabbix_pass
-
-- name: Mysql | Display new pass in playbook output
-  debug:
-      msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
-  when: 
-    - db_zabbix_pass.changed
-
 - name: Set Mysql root Password
   mysql_user:
     name: "{{ item.name }}"
-    host: "{{ item.host | default('localhost') }}"
+    host: "{{ item }}"
     password: "{{ item.password }}"
     priv: "{{ item.priv | default('priv: *.*:USAGE') }}"
     state: "{{ item.state | default('present') }}"
@@ -54,6 +41,7 @@
     encrypted: "{{ item.encrypted | default('no') }}"
   with_items: "{{ mysql_root_users }}"
   no_log: true
+  ignore_errors: true
 
 - name: Create `/root/.my.cnf`  with root password credentials
   template:
