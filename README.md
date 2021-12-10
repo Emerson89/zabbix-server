@@ -143,8 +143,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   roles:
   - zbx-front
 ``` 
-ansible-playbook -i hosts zabbix.yml
-
+ansible-playbook -i hosts zabbix.yml --extra-vars ""
 ``` 
 ## Licença
 ![Badge](https://img.shields.io/badge/license-GPLv3-green)
