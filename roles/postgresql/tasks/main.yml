@@ -13,7 +13,7 @@
 - name: Ensure PostgreSQL is started and enabled on boot.
   service:
     name: "{{ postgresql_daemon }}"
-    state: "{{ postgresql_service_state }}"
+    state: "{{ postgresql_restarted_state }}"
     enabled: "{{ postgresql_service_enabled }}"
 
 - name: Ensure PostgreSQL users zabbix
@@ -48,6 +48,7 @@
     owner: "{{ item.owner | default(postgresql_user) }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ postgresql_databases }}"
+  no_log: "{{ postgres_users_no_log }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:
@@ -68,6 +69,7 @@
     db: zabbix
     cascade: yes
   with_items: "{{ postgresql_timescale }}"
+  no_log: "{{ postgres_users_no_log }}"
   become: true
   become_user: "{{ postgresql_user }}"
   vars:

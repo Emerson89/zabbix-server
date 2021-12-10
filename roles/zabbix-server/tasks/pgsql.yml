@@ -34,6 +34,7 @@
     state: restore
     target: "{{ ls_output_create.stdout }}"
   with_items: "{{ postgresql_databases_import }}"
+  no_log: true
   become: true
   become_user: "{{ zbx_database_user }}"
   vars:
@@ -55,6 +56,7 @@
     state: restore
     target: "{{ ls_output_red.stdout }}"
   with_items: "{{ postgresql_databases_import }}"
+  no_log: true
   become: true
   become_user: "{{ zbx_database_user }}"
   vars:
@@ -76,6 +78,7 @@
     state: restore
     target: "{{ ls_output_deb.stdout }}"
   with_items: "{{ postgresql_databases_import }}"
+  no_log: true
   become: true
   become_user: "{{ zbx_database_user }}"
   vars:

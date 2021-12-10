@@ -36,7 +36,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 | zbx_server_address | IP zabbix | 127.0.0.1
 | zbx_user_privileges | Privilegios acesso banco mysql | localhost
 
-## Exemplo de playbook para instalação em localhost Mysql
+## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```
 - name: Install Banco mysql
   hosts: db

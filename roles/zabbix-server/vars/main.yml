@@ -4,7 +4,7 @@ postgresql_databases_import:
   - name: "{{ zbx_database_name }}"
     login_host: "{{ zbx_database_address }}"
     login_user: "{{ zbx_database_user }}"
-    login_password: ""
+    login_password: "{{ db_zabbix_pass }}"
 
 ## Database vars MYSQL
 mysql_databases:

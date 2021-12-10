@@ -33,6 +33,14 @@
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
 
+- name: Install postgresql-client
+  yum:
+    name: postgresql
+    state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
+
 - name: Install pip packages
   pip:
     name:

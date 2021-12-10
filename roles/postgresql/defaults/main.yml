@@ -9,9 +9,6 @@ db_zabbix_pass: Tg0z64OVNzFwNA==
 zbx_database_name: zabbix
 zbx_database_user: zabbix
 
-postgresql_locales:
-  - 'en_US.UTF-8'
-  
 # RHEL/CentOS only. Set a repository to use for PostgreSQL installation.
 postgresql_enablerepo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 

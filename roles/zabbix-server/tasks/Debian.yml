@@ -30,6 +30,14 @@
     update_cache: yes
     upgrade: yes
 
+- name: Install postgresql-client
+  apt:
+    name: postgresql
+    state: present
+  when:
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
+
 - name: Add an Apt signing key zabbix
   apt_key:
     url: http://repo.zabbix.com/zabbix-official-repo.key
@@ -96,16 +104,6 @@
   pip:
     name:
         - psycopg2
-
-#- name: Create a new pass for zabbix user
-#  command: openssl rand -base64 10
-#  register: db_zabbix_pass
-
-#- name: Display new pass in playbook output
-#  debug:
-#      msg: "New zabbix pass: {{db_zabbix_pass.stdout}}"
-#  when: 
-#    - db_zabbix_pass.changed
 
 - name: Make sure zabbix-agent service is running
   systemd:
