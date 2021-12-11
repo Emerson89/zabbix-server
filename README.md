@@ -34,7 +34,6 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP front | 127.0.0.1
 | zbx_server_address | IP zabbix | 127.0.0.1
-| zbx_user_privileges | Privilegios acesso banco mysql | localhost
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```
@@ -54,7 +53,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   hosts: web
   become: yes
   roles:
-  - zbx-front
+  - zabbix-front
 ```
 ## Exemplo de playbook para instalação em localhost postgresql
 ```
@@ -79,7 +78,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
     zabbix_server_database: pgsql
   become: yes
   roles:
-  - zbx-front
+  - zabbix-front
 ```  
 ## Exemplo de playbook para instalação em servidores separados Mysql
 ```
@@ -87,7 +86,8 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 - name: Install Banco mysql
   hosts: db
   vars:
-    zbx_user_privileges: '%'
+    zbx_server_address: IP-SERVER-ZABBIX
+    zbx_front_address: IP-FRONT
   become: yes
   roles:
   - mysql
@@ -95,9 +95,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 - name: Install Zabbix Server
   hosts: zbx
   vars:
-    zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_address: IP-SERVER-DATABASE
-    zbx_user_privileges: '%'
   become: yes
   roles:
   - zabbix-server
@@ -109,7 +107,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
     zbx_server_address: IP-SERVER-ZABBIX
   become: yes
   roles:
-  - zbx-front
+  - zabbix-front
 ```
 ## Exemplo de playbook para instalação em servidores separados postgresql
 ```
@@ -141,9 +139,11 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
     zabbix_server_database: pgsql
   become: true
   roles:
-  - zbx-front
+  - zabbix-front
+```
+## Execute o playbook
 ``` 
 ansible-playbook -i hosts zabbix.yml --extra-vars ""
-
+```
 ## Licença
 ![Badge](https://img.shields.io/badge/license-GPLv3-green)

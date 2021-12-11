@@ -1,33 +1,3 @@
-- name: Create a new database for Zabbix Server
-  mysql_db:
-    name: "{{ item.name }}"
-    collation: "{{ item.collation | default('utf8_general_ci') }}"
-    encoding: "{{ item.encoding | default('utf8') }}"
-    state: "{{ item.state | default('present') }}"
-    login_host: "{{ item.login_host | default('localhost')}}"
-    login_user: "{{ item.login_user | default('root')}}"
-    login_password: "{{ item.login_password | default('')}}"
-  with_items: "{{ mysql_databases }}"
-  when: zabbix_database_creation
-  no_log: true
-
-- name: Create Zabbix server MySQL user
-  mysql_user:
-    login_host: "{{ item.login_host | default('localhost')}}"
-    login_user: "{{ item.login_user | default('root')}}"
-    login_password: "{{ item.login_password | default('')}}"
-    name: "{{ item.name }}"
-    host: "{{ item.host | default('localhost') }}"
-    login_unix_socket: "{{ item.login_unix_socket | default('/var/run/mysqld/mysqld.sock') }}"
-    password: "{{ item.password }}"
-    priv: "{{ item.priv | default('*.*:USAGE') }}"
-    state: "{{ item.state | default('present') }}"
-    append_privs: "{{ item.append_privs | default('no') }}"
-    encrypted: "{{ item.encrypted | default('no') }}"
-  with_items: "{{ mysql_users }}"
-  when: zabbix_database_creation
-  no_log: true
-
 - name: "Get the file for schema.sql"
   shell: ls -1 {{ datafiles_path }}/create.sql.gz
   changed_when: False
@@ -40,10 +10,10 @@
     login_host: "{{ item.login_host | default('localhost')}}"
     login_user: "{{ item.login_user | default('root')}}"
     login_password: "{{ item.login_password | default('')}}"
-    name: "{{ item.name }}"
+    name: "{{ item.name | default('zabbix') }}"
     state: import
     target: "{{ ls_output_create.stdout }}"
-  with_items: "{{ mysql_databases }}"
+  with_items: "{{ mysql_databases_import }}"
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation

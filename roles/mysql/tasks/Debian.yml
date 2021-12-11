@@ -1,3 +1,7 @@
+- name: Only run update
+  apt:
+    update_cache: yes
+    
 - name: Install packages dependencies
   apt:
     name:
@@ -47,3 +51,28 @@
   no_log: true
   ignore_errors: true
 
+- name: Create Zabbix server MySQL user
+  mysql_user:
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_pass }}"
+    name: "{{ zbx_database_name }}"
+    host: "{{ item }}"
+    password: "{{ db_zabbix_pass }}"
+    priv: "{{ zbx_database_name }}.*:ALL"
+    state: present
+  with_items: 
+    - localhost
+    - "{{ zbx_server_address }}"
+    - "{{ zbx_front_address }}"
+  no_log: true
+
+- name: Create a new database for Zabbix Server
+  mysql_db:
+    name: "{{ zbx_database_name }}"
+    collation: utf8_bin
+    encoding: utf8
+    state: present
+    login_host: "{{ zbx_database_address }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_pass }}"

@@ -1,10 +1,12 @@
 zabbix_version: 4.4
-zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_name: zabbix
 zbx_database_user: zabbix
 zbx_database_address: localhost
+zbx_server_address: localhost
+zbx_front_address: localhost
 mysql_root_username: root
-mysql_root_pass: Tg0z64OVNzFwNA==
+mysql_root_pass: Tg0z64OVddNzFwNA==
+db_zabbix_pass: Tg0z64OVNzFwNA==
 zbx_user_privileges: localhost
 
 # Databases.

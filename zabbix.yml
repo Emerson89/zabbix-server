@@ -15,4 +15,4 @@
   hosts: zabbix
   become: yes
   roles:
-  - zbx-front
+  - zabbix-front
