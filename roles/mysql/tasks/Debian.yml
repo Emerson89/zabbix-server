@@ -37,6 +37,13 @@
       mode: 0600
       force: no
 
+- name: Configure my.cnf settings.
+  lineinfile:
+    dest: "/etc/mysql/mariadb.conf.d/50-server.cnf"
+    line: "bind-address = 0.0.0.0"
+    state: present
+  notify: restart mariadb
+
 - name: Set Mysql root Password
   mysql_user:
     name: "{{ item.name }}"
