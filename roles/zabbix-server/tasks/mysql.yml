@@ -3,6 +3,15 @@
   changed_when: False
   when:
     - zabbix_database_sqlload
+    - zabbix_version is version_compare('5.4', '<=')
+  register: ls_output_create
+
+- name: "Get the file for schema.sql v6"
+  shell: ls -1 {{ datafiles_path }}/server.sql.gz
+  changed_when: False
+  when:
+    - zabbix_database_sqlload
+    - zabbix_version is version_compare('6.0', '=')
   register: ls_output_create
 
 - name: Import database Zabbix

@@ -34,6 +34,8 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP front | 127.0.0.1
 | zbx_server_address | IP zabbix | 127.0.0.1
+| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0) | 127.0.0.1
+| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0) enable|disable | disable
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```

@@ -116,6 +116,14 @@
     src: zabbix_server.conf.44.j2
     dest: /etc/zabbix/zabbix_server.conf
   notify: restart zabbix-server
+  when: zabbix_version is version_compare('5.4', '<=')
+
+- name: Copy zabbix_server.conf template v6
+  template:
+    src: templates/zabbix_server.conf.60.j2
+    dest: /etc/zabbix/zabbix_server.conf
+  notify: restart zabbix-server
+  when: zabbix_version is version_compare('6.0', '=')
 
 - name: Copy zabbix_agent.conf template 
   template:
