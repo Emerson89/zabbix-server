@@ -49,6 +49,7 @@ zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or pgsql
 zabbix_database_creation: True
 zabbix_database_sqlload: True
+zabbix_server_ha: disable
 # Databases to ensure exist.
 postgresql_databases: []
 # - name: exampledb # required; the rest are optional
