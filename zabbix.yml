@@ -1,24 +1,18 @@
 ---
 - name: Install Banco mysql
   hosts: zabbix
-  vars:
-    zbx_server_ip_ha: 192.168.33.13
   become: yes
   roles:
   - mysql
 
 - name: Install Zabbix Server
-  hosts: zbx
-  vars:
-    zabbix_server_ha: enable
+  hosts: zabbix
   become: yes
   roles:
   - zabbix-server
 
 - name: Install Front
   hosts: zabbix
-  vars:
-    zabbix_server_ha: enable
   become: yes
   roles:
   - zabbix-front
