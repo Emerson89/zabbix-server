@@ -2,6 +2,7 @@
 zbx_server_address: 127.0.0.1
 zbx_front_address: 127.0.0.1
 zbx_database_address: 127.0.0.1
+zbx_server_ip_ha: 127.0.0.1
 
 zabbix_database_creation: True
 zabbix_database_sqlload: True

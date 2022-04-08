@@ -44,6 +44,7 @@
     - localhost
     - "{{ zbx_server_address }}"
     - "{{ zbx_front_address }}"
+    - "{{ zbx_server_ip_ha }}"
   no_log: true
 
 - name: Create a new database for Zabbix Server
