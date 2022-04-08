@@ -18,6 +18,7 @@
 - 5.0
 - 5.2
 - 5.4
+- 6.0
 
 Suporte a banco de dados MYSQL e Postgresql com timescaledb
 
@@ -41,24 +42,18 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 ```
 - name: Install Banco mysql
   hosts: db
-  vars:
-    zbx_server_ip_ha: IP-SERVER-NODE-2 (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - mysql
 
 - name: Install Zabbix Server
   hosts: zbx
-  vars:
-    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - zabbix-server
 
 - name: Install Front
   hosts: web
-  vars:
-    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - zabbix-front
@@ -67,8 +62,6 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 ```
 - name: Install Banco postgresql
   hosts: db
-  vars:
-    zbx_server_ip_ha: IP-SERVER-NODE-2 (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - postgresql
@@ -78,7 +71,6 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   vars:
     zabbix_server_database_long: pgsql
     zabbix_server_database: pgsql
-    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - zabbix-server
@@ -87,7 +79,6 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   hosts: web
   vars:
     zabbix_server_database: pgsql
-    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - zabbix-front
@@ -100,6 +91,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_front_address: IP-FRONT
+    zbx_server_ip_ha: IP-SERVER-NODE-2 (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - mysql
@@ -108,13 +100,15 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   hosts: zbx
   vars:
     zbx_database_address: IP-SERVER-DATABASE
+    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
   become: yes
   roles:
   - zabbix-server
 
 - name: Install Front
   hosts: web
-  vars:
+  vars:    
+    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
     zbx_database_address: IP-SERVER-DATABASE
     zbx_server_address: IP-SERVER-ZABBIX
   become: yes
@@ -129,6 +123,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_front_address: IP-SERVER-FRONT
+    zbx_server_ip_ha: IP-SERVER-NODE-2 (Caso for usar HA somente versão 6.0)
   become: true
   roles:
   - postgresql
@@ -136,6 +131,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 - name: Install Zabbix Server
   hosts: zabbix
   vars:
+    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
     zbx_database_address: IP-SERVER-DATABASE
     zabbix_server_database_long: pgsql
     zabbix_server_database: pgsql
@@ -146,6 +142,7 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 - name: Install Front
   hosts: web
   vars:
+    zabbix_server_ha: enable (Caso for usar HA somente versão 6.0)
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_address: IP-SERVER-DATABASE
     zabbix_server_database: pgsql
@@ -153,6 +150,17 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
   roles:
   - zabbix-front
 ```
+## Exemplo arquivo de inventório HA versão 6.0
+```
+[db]
+IP-DATABASE
+[zabbix]
+IP-ZABBIX_SERVER
+IP-ZABBIX_SERVER-NODE2
+[web]
+IP_FRONT
+```
+
 ## Execute o playbook
 ``` 
 ansible-playbook -i hosts zabbix.yml --extra-vars ""

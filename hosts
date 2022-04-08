@@ -1,5 +1,0 @@
-[zabbix]
-192.168.33.12 ansible_user=vagrant
-[zbx]
-192.168.33.12 ansible_user=vagrant
-192.168.33.13 ansible_user=vagrant
