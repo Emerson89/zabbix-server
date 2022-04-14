@@ -1,7 +1,7 @@
 - name: Only run update
   apt:
     update_cache: yes
-    
+
 - name: Install packages dependencies
   apt:
     name:
@@ -11,6 +11,23 @@
         - python3
         - python3-pip
     state: present
+
+- name: Add an Apt signing key mysql
+  apt_key:
+    url: https://mariadb.org/mariadb_release_signing_key.asc
+    state: present
+
+- name: Install repo mysql
+  apt_repository:
+    repo: "{{ item }} [arch=amd64,arm64,ppc64el] https://mariadb.mirror.liquidtelecom.com/repo/10.5/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+  when: 
+   - mysql_repo == "mysql"
+   - ansible_distribution == "Ubuntu"
+  with_items:
+    - deb-src
+    - deb
 
 - name: Install mariadb-server
   apt:
