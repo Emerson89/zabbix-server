@@ -25,14 +25,14 @@
     url: "{{ __postgresql_key }}"
     state: present
   when: 
-   - ansible_distribution == 'Debian'
+   - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Add an Apt signing key timescaledb    
   apt_key:
     url: "{{ __postgresql_key_time }}"
     state: present
   when: 
-   - ansible_distribution == 'Debian'
+   - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Install repo postgresql
   apt_repository:
@@ -40,7 +40,7 @@
     state: present
     update_cache: true
   when: 
-   - ansible_distribution == 'Debian'
+   - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' 
 
 - name: Install repo timescaledb
   apt_repository:
@@ -51,6 +51,11 @@
 - name: PostgreSQL packages are installed.
   apt:
     name: "{{ __postgresql_packages }}"
+    state: present
+
+- name: PostgreSQL packages are installed.
+  apt:
+    name: "{{ __postgresql_packages_timescale }}"
     state: present
 
 - name: Executando timescaledb-tune
