@@ -10,6 +10,7 @@
 - Ubuntu20
 - Debian10
 - Rocky8
+- Almalinux8
 - Centos8
 
 ## Versões suportadas zabbix
