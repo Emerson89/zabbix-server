@@ -164,7 +164,7 @@ IP_FRONT
 
 ## Execute o playbook
 ``` 
-ansible-playbook -i hosts zabbix.yml --extra-vars ""
+ansible-playbook -i hosts zabbix.yml --extra-vars "zabbix_version=5.0"
 ```
 ## Licença
 ![Badge](https://img.shields.io/badge/license-GPLv3-green)

@@ -12,7 +12,7 @@
   when:
     - zabbix_database_sqlload
     - zabbix_version is version_compare('6.0', '=')
-  register: ls_output_create
+  register: ls_output_zabbix
 
 - name: Import database Zabbix
   mysql_db:
@@ -26,5 +26,21 @@
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
+  no_log: true
+  ignore_errors: true
+
+- name: Import database Zabbix V6
+  mysql_db:
+    login_host: "{{ item.login_host | default('localhost')}}"
+    login_user: "{{ item.login_user | default('root')}}"
+    login_password: "{{ item.login_password | default('')}}"
+    name: "{{ item.name | default('zabbix') }}"
+    state: import
+    target: "{{ ls_output_zabbix.stdout }}"
+  with_items: "{{ mysql_databases_import }}"
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+    - zabbix_version is version_compare('6.0', '=')
   no_log: true
   ignore_errors: true

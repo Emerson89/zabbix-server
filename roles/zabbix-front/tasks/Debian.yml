@@ -45,6 +45,11 @@
     - zabbix-get
     - zabbix-agent
 
+- name: Remove apache
+  apt:
+    name: apache2
+    state: absent
+     
 - name: Ubuntu | Install Zabbix packeges
   apt:
     name: php7.4-pgsql
