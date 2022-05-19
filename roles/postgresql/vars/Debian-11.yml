@@ -12,4 +12,5 @@ __postgresql_packages:
   - postgresql-{{ __postgresql_version }}
   - postgresql-contrib
   - libpq-dev
+__postgresql_packages_timescale:
   - timescaledb-2-postgresql-{{ __postgresql_version }}

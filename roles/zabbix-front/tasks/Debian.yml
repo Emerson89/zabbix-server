@@ -34,7 +34,7 @@
   with_items:
     - deb-src
     - deb
-
+    
 - name: Install Zabbix packeges
   apt:
     name: "{{ packeges }}"
@@ -49,18 +49,19 @@
   apt:
     name: apache2
     state: absent
-     
-- name: Ubuntu | Install Zabbix packeges
+
+- name: Ensure a locale exists
+  locale_gen:
+    name: en_US
+    state: present
+  when:
+    - ansible_distribution == 'Debian'
+
+- name: php-pgsql | Install Zabbix packeges
   apt:
     name: php7.4-pgsql
   when:
-    - ansible_distribution == 'Ubuntu' and zabbix_server_database == 'pgsql'
-
-- name: Debian | Install Zabbix packeges
-  apt:
-    name: php7.3-pgsql
-  when:
-    - ansible_distribution == 'Debian' and zabbix_server_database == 'pgsql'
+    - zabbix_server_database == 'pgsql'
 
 - name: Copy php.zabbix.conf template 
   template:
@@ -69,19 +70,9 @@
 
 - name: Make sure php service is running
   systemd:
-    name: php7.3-fpm
-    state: restarted
-    enabled: yes
-  when:
-    - ansible_distribution == "Debian"
-
-- name: Make sure php service is running
-  systemd:
     name: php7.4-fpm
     state: restarted
     enabled: yes
-  when:
-    - ansible_distribution == "Ubuntu"
 
 - name: Make sure nginx service is running
   systemd:
