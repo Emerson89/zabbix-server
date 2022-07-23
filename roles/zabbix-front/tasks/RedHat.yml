@@ -7,6 +7,12 @@
     state: disabled
   ignore_errors: true
 
+- name: Update Package Cache
+  yum:
+    name: '*' 
+    state: latest 
+    update_cache: true
+    
 - name: Install packages
   yum:
     name:

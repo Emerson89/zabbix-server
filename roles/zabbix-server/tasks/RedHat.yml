@@ -85,7 +85,9 @@
 
 - name: Update Package Cache
   yum:
-    update_only: yes
+    name: '*' 
+    state: latest 
+    update_cache: true
 
 - name: Install Zabbix packeges
   yum:
