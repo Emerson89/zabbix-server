@@ -41,48 +41,25 @@ Suporte a banco de dados MYSQL e Postgresql com timescaledb
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```
-- name: Install Banco mysql
-  hosts: db
-  become: yes
+---
+- hosts: all
+  become: true
   roles:
-  - mysql
+    - {role: roles/mysql}
+    - {role: roles/zabbix-server}
+    - {role: roles/zabbix-front}
 
-- name: Install Zabbix Server
-  hosts: zbx
-  become: yes
-  roles:
-  - zabbix-server
-
-- name: Install Front
-  hosts: web
-  become: yes
-  roles:
-  - zabbix-front
 ```
 ## Exemplo de playbook para instalação em localhost postgresql
 ```
-- name: Install Banco postgresql
-  hosts: db
-  become: yes
+---
+- hosts: all
+  become: true
   roles:
-  - postgresql
+    - {role: roles/postgresql}
+    - {role: roles/zabbix-server}
+    - {role: roles/zabbix-front}
 
-- name: Install Zabbix Server
-  hosts: zbx
-  vars:
-    zabbix_server_database_long: pgsql
-    zabbix_server_database: pgsql
-  become: yes
-  roles:
-  - zabbix-server
-
-- name: Install Front
-  hosts: web
-  vars:
-    zabbix_server_database: pgsql
-  become: yes
-  roles:
-  - zabbix-front
 ```  
 ## Exemplo de playbook para instalação em servidores separados Mysql
 ```
@@ -166,5 +143,31 @@ IP_FRONT
 ``` 
 ansible-playbook -i hosts zabbix.yml --extra-vars "zabbix_version=5.0"
 ```
+
+## Para nível de aprendizado e teste há opção de utilizar o vagrant com virtualbox
+
+## Para instalação: 
+- https://www.vagrantup.com/downloads
+- https://www.virtualbox.org/wiki/Downloads
+
+No arquivo Vagranfile se encontra opções de SO que é suportado nesta instalação o default é rocky 8, caso queira utilizar outra opção descomente a linha
+
+```
+vms = {
+'rocky-srv' => {'memory' => '2024', 'cpus' => '1', 'ip' => '12', 'box' => 'rockylinux/8'},
+#'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/buster64'},
+#'ubuntu-srv' => {'memory' => '1024', 'cpus' => '2', 'ip' => '14', 'box' => 'ubuntu/focal64'},
+}
+```
+Para setar versão zabbix em *zabbix.yml* altere a variável *zabbix_version* default *4.4* conforme sua necessidade
+
+# Para utilizar
+```
+vagrant up - Provisiona a VM
+vagrant ssh - Acesso via ssh
+vagrant halt - Desliga a VM
+```
+Terminado o provisionamento basta acessar no navegador http://192.168.33.12 - (default) para acesso ao Zabbix
+
 ## Licença
 ![Badge](https://img.shields.io/badge/license-GPLv3-green)
