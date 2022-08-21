@@ -3,7 +3,8 @@
 
 vms = {
 'rocky-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '12', 'box' => 'rockylinux/8'},
-#'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/buster64'},
+#'almalinux-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '12', 'box' => 'almalinux/8'},
+#'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/bullseye64'},
 #'ubuntu-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '14', 'box' => 'ubuntu/focal64'},
 }
 
