@@ -15,7 +15,7 @@
 
 ## Versões suportadas zabbix
 
-- 4.4
+- 4.4 - Menos Debian 11
 - 5.0
 - 5.2
 - 5.4
