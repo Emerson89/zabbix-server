@@ -1,11 +1,11 @@
 ---
 - hosts: all
   vars:
-    zabbix_version: 5.0
-    zabbix_server_database_long: pgsql
-    zabbix_server_database: pgsql
+    zabbix_version: 4.4
+    zabbix_server_database_long: mysql
+    zabbix_server_database: mysql
   become: true
   roles:
-    - {role: roles/postgresql}
+    - {role: roles/mysql}
     - {role: roles/zabbix-server}
     - {role: roles/zabbix-front}
