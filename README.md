@@ -23,6 +23,9 @@
 
 Suporte a banco de dados MYSQL e Postgresql com timescaledb
 
+show variables like '%expire_logs%';
+SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
+
 # Como Usar!!!
 
 ## Crie o arquivo de inventário hosts 

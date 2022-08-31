@@ -30,6 +30,19 @@
     state: started
     enabled: yes
 
+- name: Mysql-server.cnf
+  template:
+      src: mysql-server.cnf.j2
+      dest: /etc/my.cnf.d/mysql-server.cnf
+      owner: root
+      mode: 0644
+      force: yes
+
+- name: Restart MySQL
+  service:
+    name: mysqld
+    state: restarted
+    
 - name: Create Zabbix server MySQL user
   mysql_user:
     login_host: "{{ zbx_database_address }}"
