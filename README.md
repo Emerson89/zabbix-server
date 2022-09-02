@@ -23,8 +23,11 @@
 
 Suporte a banco de dados MYSQL e Postgresql com timescaledb
 
+Para limitar uso de espaço em disco pelo arquivo de log binlog do mysql que por default é 30 dias para expurgo você pode reduzir no banco com comando abaixo:
+```
 show variables like '%expire_logs%';
 SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
+```
 
 # Como Usar!!!
 
