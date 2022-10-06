@@ -46,7 +46,7 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 | zabbix_server_ha | habilita o HA (Somente para a Versão 6.0) enable|disable | disable
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
-```
+```yaml
 ---
 - hosts: all
   become: true
@@ -54,10 +54,9 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
     - {role: roles/mysql}
     - {role: roles/zabbix-server}
     - {role: roles/zabbix-front}
-
 ```
 ## Exemplo de playbook para instalação em localhost postgresql
-```
+```yaml
 ---
 - hosts: all
   become: true
@@ -68,7 +67,7 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 
 ```  
 ## Exemplo de playbook para instalação em servidores separados Mysql
-```
+```yaml
 ---
 - name: Install Banco mysql
   hosts: db
@@ -100,7 +99,7 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
   - zabbix-front
 ```
 ## Exemplo de playbook para instalação em servidores separados postgresql
-```
+```yaml
 ---
 - name: Install Banco postgresql
   hosts: db
@@ -146,7 +145,7 @@ IP_FRONT
 ```
 
 ## Execute o playbook
-``` 
+```
 ansible-playbook -i hosts zabbix.yml --extra-vars "zabbix_version=5.0"
 ```
 
@@ -158,7 +157,7 @@ ansible-playbook -i hosts zabbix.yml --extra-vars "zabbix_version=5.0"
 
 No arquivo Vagranfile se encontra opções de SO que é suportado nesta instalação o default é rocky 8, caso queira utilizar outra opção descomente a linha
 
-```
+```ruby
 vms = {
 'rocky-srv' => {'memory' => '2024', 'cpus' => '1', 'ip' => '12', 'box' => 'rockylinux/8'},
 #'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/buster64'},
