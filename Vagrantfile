@@ -13,6 +13,7 @@ Vagrant.configure('2') do |config|
      config.vm.define "#{name}" do |my|
        my.vm.box = conf['box']
        my.vm.hostname = "#{name}.example.com"
+       #my.disksize.size = '30GB'
        my.vm.network 'private_network', ip: "192.168.33.#{conf['ip']}"
        my.vm.provision "ansible" do |ansible|
           ansible.playbook = "zabbix.yml"

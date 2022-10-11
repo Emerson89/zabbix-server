@@ -21,7 +21,7 @@
 - 5.4
 - 6.0
 
-Suporte a banco de dados MYSQL e Postgresql com timescaledb
+Suporte a banco de dados MySQL e Postgresql com timescaledb
 
 Para limitar uso de espaço em disco pelo arquivo de log binlog do mysql que por default é 30 dias para expurgo você pode reduzir no banco com comando abaixo:
 ```
@@ -60,6 +60,9 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 ---
 - hosts: all
   become: true
+  vars:
+    zabbix_server_database: pgsql
+    zabbix_server_database_long: pgsql
   roles:
     - {role: roles/postgresql}
     - {role: roles/zabbix-server}
@@ -134,14 +137,14 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
   - zabbix-front
 ```
 ## Exemplo arquivo de inventório HA versão 6.0
-```
+```yaml
 [db]
-IP-DATABASE
+IP-DATABASE ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
 [zabbix]
-IP-ZABBIX_SERVER
-IP-ZABBIX_SERVER-NODE2
+IP-ZABBIX_SERVER ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
+IP-ZABBIX_SERVER-NODE2 ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
 [web]
-IP_FRONT
+IP_FRONT ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
 ```
 
 ## Execute o playbook

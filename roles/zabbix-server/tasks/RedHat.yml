@@ -57,19 +57,35 @@
   when:
     - zabbix_version is version_compare('5.2', '<=')
   
-- name: "RedHat | Set facts for Zabbix >= 5.4"
+- name: "RedHat mysql| Set facts for Zabbix = 5.4"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_server_database }}"
   when:
-    - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_version is version_compare('5.4', '=')
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'mysql'
 
-- name: "RedHat | Set facts for Zabbix >= 5.4"
+- name: "RedHat mysql| Set facts for Zabbix >= 6.0"
+  set_fact:
+    datafiles_path: "/usr/share/zabbix-sql-scripts/{{ zabbix_server_database }}"
+  when:
+    - zabbix_version is version_compare('6.0', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'mysql'
+
+- name: "RedHat pgsql| Set facts for Zabbix = 5.4"
   set_fact:
     datafiles_path: "/usr/share/doc/zabbix-sql-scripts/{{ zabbix_database_postgresql }}"
   when:
-    - zabbix_version is version_compare('5.4', '>=')
+    - zabbix_version is version_compare('5.4', '=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
+
+- name: "RedHat pgsql| Set facts for Zabbix >= 6.0"
+  set_fact:
+    datafiles_path: "/usr/share/zabbix-sql-scripts/{{ zabbix_database_postgresql }}"
+  when:
+    - zabbix_version is version_compare('6.0', '=')
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'pgsql'
 
