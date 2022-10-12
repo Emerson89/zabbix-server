@@ -55,7 +55,7 @@
     name: en_US
     state: present
   when:
-    - ansible_distribution == 'Debian'
+    - ansible_distribution == 'Debian' 
 
 - name: php-pgsql | Install Zabbix packeges
   apt:
@@ -73,6 +73,16 @@
     name: php7.4-fpm
     state: restarted
     enabled: yes
+  when: 
+    - ansible_distribution_file_variety == 'Debian' and ansible_distribution_major_version <= '20'
+
+- name: Make sure php service is running
+  systemd:
+    name: php8.1-fpm
+    state: restarted
+    enabled: yes
+  when:
+    - ansible_distribution == 'Ubuntu' and ansible_distribution_major_version >= '22'
 
 - name: Make sure nginx service is running
   systemd:
@@ -95,7 +105,7 @@
     src: default.j2
     dest: /etc/nginx/sites-enabled/default
   when:
-    - ansible_distribution == 'Debian'
+    - ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Create a symbolic link
   ansible.builtin.file:

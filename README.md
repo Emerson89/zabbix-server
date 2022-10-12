@@ -8,6 +8,7 @@
 ## Suporte SO
 
 - Ubuntu20
+- Ubuntu22
 - Debian11
 - Rocky8
 - Almalinux8

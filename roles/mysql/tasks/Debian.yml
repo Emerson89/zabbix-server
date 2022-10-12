@@ -24,7 +24,7 @@
     update_cache: yes
   when: 
    - mysql_repo == "mysql"
-   - ansible_distribution == "Ubuntu"
+   - ansible_distribution == "Ubuntu" and ansible_distribution_major_version <= '20'
   with_items:
     - deb-src
     - deb
