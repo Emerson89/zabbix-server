@@ -16,11 +16,13 @@
 
 ## Versões suportadas zabbix
 
-- 4.4 - Menos Debian 11
-- 5.0
-- 5.2
-- 5.4
-- 6.0
+| Versões Zabbix |  Debian 11 | Ubuntu 20 | Ubuntu 22 | Rocky 8 | Almalinux 8 | Centos 8 |
+|   ----         |     ---    |    ---    |    ---    |   ---   |     ---     |    ---   |
+|    4.4         |      No    |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.0         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.2         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.4         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    6.0         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
 
 Suporte a banco de dados MySQL e Postgresql com timescaledb
 
