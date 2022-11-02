@@ -95,7 +95,7 @@ LogRemoteCommands=1
 # Default:
 # Server=
 
-{% if ansible_hostname == "127.0.0.1" %}
+{% if ansible_hostname == "localhost" %}
 Server=127.0.0.1
 {% else %}
 Server={{ zbx_server_address }}
@@ -140,7 +140,7 @@ Server={{ zbx_server_address }}
 # Default:
 # ServerActive=
 
-{% if ansible_hostname == "127.0.0.1" %}
+{% if ansible_hostname == "localhost" %}
 ServerActive=127.0.0.1
 {% else %}
 ServerActive={{ zbx_server_address }}
@@ -155,7 +155,7 @@ ServerActive={{ zbx_server_address }}
 # Default:
 # Hostname=
 
-{% if ansible_hostname == "127.0.0.1" %}
+{% if ansible_hostname == "localhost" %}
 Hostname=Zabbix server
 {% else %}
 Hostname={{ ansible_hostname }}

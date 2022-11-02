@@ -1,6 +1,8 @@
 ---
 - hosts: all
   become: true
+  vars:
+    zabbix_version: 6.0
   roles:
     - {role: roles/mysql}
     - {role: roles/zabbix-server}

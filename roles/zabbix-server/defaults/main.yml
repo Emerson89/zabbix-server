@@ -1,5 +1,4 @@
 zabbix_version: 4.4
-zabbix_hostname: "{{ ansible_ssh_host }}"
 zbx_database_name: zabbix
 zbx_database_user: zabbix
 zbx_database_address: 127.0.0.1

@@ -1003,7 +1003,7 @@ HANodeName={{ ansible_hostname }}
 # Mandatory: no
 # Default:
 {% if zabbix_server_ha == "enable" %} 
-NodeAddress={{ zabbix_hostname }}:10051
+NodeAddress={{ ansible_ssh_host }}:10051
 {% else %}
 # NodeAddress=localhost:10051
 {% endif %}
