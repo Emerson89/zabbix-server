@@ -26,6 +26,7 @@
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
+    - zabbix_version is version_compare('5.4', '<=')
   no_log: true
   ignore_errors: true
 
@@ -37,6 +38,7 @@
     name: "{{ item.name | default('zabbix') }}"
     state: import
     target: "{{ ls_output_zabbix.stdout }}"
+    force: yes
   with_items: "{{ mysql_databases_import }}"
   when:
     - zabbix_database_sqlload
