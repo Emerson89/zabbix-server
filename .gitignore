@@ -1,3 +1,4 @@
 *.txt
 *.retry
 .vagrant
+hosts

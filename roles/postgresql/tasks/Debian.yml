@@ -58,12 +58,12 @@
     name: "{{ __postgresql_packages_timescale }}"
     state: present
 
-- name: Executando timescaledb-tune
+- name: Execute timescaledb-tune
   shell: |
    timescaledb-tune --quiet --yes
   notify: restart postgresql
 
-- name: Aumentando max_connections
+- name: High max_connections
   lineinfile:
     dest: "{{ postgresql_config_path }}/postgresql.conf"
     regexp: '^max_connections '

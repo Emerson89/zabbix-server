@@ -11,7 +11,7 @@
   changed_when: False
   when:
     - zabbix_database_sqlload
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
   register: ls_output_zabbix
 
 - name: Import database Zabbix
@@ -43,6 +43,6 @@
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
   no_log: true
   ignore_errors: true

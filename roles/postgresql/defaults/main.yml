@@ -11,7 +11,7 @@ zbx_database_name: zabbix
 zbx_database_user: zabbix
 
 # RHEL/CentOS only. Set a repository to use for PostgreSQL installation.
-postgresql_enablerepo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+postgresql_enablerepo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 # Set postgresql state when configuration changes are made. Recommended values:
 # `restarted` or `reloaded`

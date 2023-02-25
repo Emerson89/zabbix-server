@@ -37,7 +37,7 @@
   set_fact:
     datafiles_path: "/usr/share/zabbix-sql-scripts/{{ zabbix_database_postgresql }}"
   when:
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'pgsql'
 
@@ -139,7 +139,7 @@
     src: templates/zabbix_server.conf.60.j2
     dest: /etc/zabbix/zabbix_server.conf
   notify: restart zabbix-server
-  when: zabbix_version is version_compare('6.0', '=')
+  when: zabbix_version is version_compare('6.0', '>=')
 
 - name: Copy zabbix_agent.conf template 
   template:

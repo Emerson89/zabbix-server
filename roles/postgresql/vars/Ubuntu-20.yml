@@ -1,8 +1,8 @@
 ---
 __postgresql_version: "13"
-__postgresql_data_dir: "/var/lib/postgresql/{{ __postgresql_version }}/main"
-__postgresql_bin_path: "/usr/lib/postgresql/{{ __postgresql_version }}/bin"
-__postgresql_config_path: "/etc/postgresql/{{ __postgresql_version }}/main"
+__postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
+__postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
+__postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
 __postgresql_daemon: postgresql
 #__timescaledb_repo: "ppa:timescale/timescaledb-ppa"
 __postgresql_key: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
@@ -10,9 +10,9 @@ __postgresql_repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distr
 __postgresql_key_time: "https://packagecloud.io/timescale/timescaledb/gpgkey"
 __timescaledb_repo: "deb https://packagecloud.io/timescale/timescaledb/ubuntu/ {{ ansible_distribution_release }} main"
 __postgresql_packages:
-  - postgresql-{{ __postgresql_version }}
+  - postgresql-{{ postgresql_version }}
   - postgresql-contrib
   - libpq-dev
 __postgresql_packages_timescale:  
-  - timescaledb-2-loader-postgresql-{{ __postgresql_version }}
-  - timescaledb-2-postgresql-{{ __postgresql_version }}
+  - timescaledb-2-loader-postgresql-{{ postgresql_version }}
+  - timescaledb-2-postgresql-{{ postgresql_version }}

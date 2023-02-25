@@ -40,13 +40,14 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 | Nome | Descrição | Default | 
 |------|-----------|---------|
 | zabbix_version | Versão zabbix-server | 4.4|
+| postgresql_version | Versao postgresql | 13 |
 | zabbix_server_database_long | Tipo de database[mysql/pgsql] |  mysql
 | zabbix_server_database | Tipo de database[mysql/pgsql] | mysql
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP front | 127.0.0.1
 | zbx_server_address | IP zabbix | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0) | 127.0.0.1
-| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0) enable|disable | disable
+| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 >) | 127.0.0.1
+| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 >) enable|disable | disable
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```yaml
@@ -71,7 +72,22 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
     - {role: roles/zabbix-server}
     - {role: roles/zabbix-front}
 
-```  
+```
+## Exemplo de playbook para instalação em localhost postgresql outra version postgresql
+```yaml
+---
+- hosts: all
+  become: true
+  vars:
+    zabbix_server_database: pgsql
+    zabbix_server_database_long: pgsql
+    postgresql_version: 14
+  roles:
+    - {role: roles/postgresql}
+    - {role: roles/zabbix-server}
+    - {role: roles/zabbix-front}
+
+```
 ## Exemplo de playbook para instalação em servidores separados Mysql
 ```yaml
 ---
@@ -165,7 +181,8 @@ No arquivo Vagranfile se encontra opções de SO que é suportado nesta instala�
 
 ```ruby
 vms = {
-'rocky-srv' => {'memory' => '2024', 'cpus' => '1', 'ip' => '12', 'box' => 'rockylinux/8'},
+#'rocky-srv' => {'memory' => '2024', 'cpus' => '1', 'ip' => '11', 'box' => 'rockylinux/8'},
+'almalinux-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '12', 'box' => 'almalinux/8'},
 #'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/buster64'},
 #'ubuntu-srv' => {'memory' => '1024', 'cpus' => '2', 'ip' => '14', 'box' => 'ubuntu/focal64'},
 }

@@ -34,6 +34,16 @@
    name: "{{ postgresql_enablerepo }}"
    state: present
 
+- name: Install timescaledb Repo.
+  yum_repository:
+    name: "timescale_timescaledb"
+    description: Timescaledb Official Repository - $basearch
+    baseurl: "https://packagecloud.io/timescale/timescaledb/el/{{ ansible_distribution_major_version }}/$basearch"
+    gpgcheck: 0
+    enabled: 1
+    gpgkey: "https://packagecloud.io/timescale/timescaledb/gpgkey"
+    state: "present"
+
 - name: Disable package postgresql
   command: dnf module disable postgresql -y
 
@@ -42,7 +52,7 @@
     name:
       - postgresql{{ postgresql_version }}-server
       - postgresql{{ postgresql_version }}
-      - timescaledb_{{ postgresql_version }}
+      - timescaledb-2-postgresql-{{ postgresql_version }}
     state: present
 
 - name: PostgreSQL database is initialized.

@@ -13,7 +13,7 @@
   changed_when: False
   when:
     - zabbix_database_sqlload
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
     - ansible_distribution_file_variety == 'RedHat' or ansible_distribution_file_variety == 'Debian'
   register: ls_output_server
 
@@ -31,7 +31,7 @@
   changed_when: False
   when:
     - zabbix_database_sqlload
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
     - ansible_distribution_file_variety == 'RedHat'
   register: ls_output_time
 
@@ -84,7 +84,7 @@
   vars:
     ansible_ssh_pipelining: true
   when:
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
     - zabbix_database_sqlload
     - zabbix_database_creation
   ignore_errors: true
@@ -133,7 +133,7 @@
     - zabbix_database_sqlload
     - zabbix_database_creation
     - ansible_distribution_file_variety == 'RedHat'
-    - zabbix_version is version_compare('6.0', '=')
+    - zabbix_version is version_compare('6.0', '>=')
 
 - name: Debian | Import Schema timescaledb
   postgresql_db:
