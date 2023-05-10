@@ -23,6 +23,7 @@
 |    5.2         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
 |    5.4         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
 |    6.0         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
+|    6.4         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
 
 Suporte a banco de dados MySQL e Postgresql com timescaledb
 
@@ -46,8 +47,8 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP front | 127.0.0.1
 | zbx_server_address | IP zabbix | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 >) | 127.0.0.1
-| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 >) enable|disable | disable
+| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 ou maior) | 127.0.0.1
+| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 ou maior) enable|disable | disable
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```yaml
@@ -73,7 +74,7 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
     - {role: roles/zabbix-front}
 
 ```
-## Exemplo de playbook para instalação em localhost postgresql outra version postgresql
+## Exemplo de playbook para instalação em localhost postgresql usando outra versão postgresql
 ```yaml
 ---
 - hosts: all
