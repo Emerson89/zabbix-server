@@ -2,6 +2,11 @@
   apt:
     update_cache: yes
 
+- name: Ensure a locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+
 - name: Install packages dependencies
   apt:
     name:
@@ -10,6 +15,10 @@
         - wget
         - python3
         - python3-pip
+        - libdatetime-perl 
+        - liblogger-syslog-perl
+        - liblogger-syslog-perl
+        - libdbd-mysql-perl
     state: present
 
 - name: Add an Apt signing key mysql

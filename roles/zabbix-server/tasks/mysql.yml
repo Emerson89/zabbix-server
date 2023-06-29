@@ -38,11 +38,74 @@
     name: "{{ item.name | default('zabbix') }}"
     state: import
     target: "{{ ls_output_zabbix.stdout }}"
-    force: yes
+    force: true
   with_items: "{{ mysql_databases_import }}"
   when:
     - zabbix_database_sqlload
     - zabbix_database_creation
     - zabbix_version is version_compare('6.0', '>=')
   no_log: true
-  ignore_errors: true
+  changed_when: false
+
+- name: Template Mysql_zbx_part
+  template:
+      src: mysql_zbx_part.pl.j2
+      dest: /usr/lib/zabbix/mysql_zbx_part.pl
+      owner: root
+      mode: 0755
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition 
+
+- name: Create cronjob mysql_zbx_part
+  ansible.builtin.cron:
+    name: "partition"
+    minute: "{{ mysql_cron_min }}"
+    hour: "{{ mysql_cron_hr }}"
+    job: "/usr/lib/zabbix/mysql_zbx_part.pl >/dev/null 2>&1"
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition
+
+- name: Date-Month
+  command: date "+%Y_%m_%d" 
+  register: result_month
+  changed_when: false
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition
+
+- name: Month-Year
+  command: date "+%Y_%m" 
+  register: result_year
+  changed_when: false
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition
+
+- name: Date
+  command: date -u +%Y-%m-%d-%H:%M:%S
+  register: result
+  changed_when: false
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition
+
+- name: Alter table partition mysql
+  mysql_query:
+    login_host: "{{ item.login_host | default('localhost')}}"
+    login_user: "{{ item.login_user | default('root')}}"
+    login_password: "{{ item.login_password | default('')}}"
+    login_db: "{{ zbx_database_name }}"
+    query:
+    - ALTER TABLE history_uint PARTITION BY RANGE (clock)(PARTITION p{{ result_month.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE history PARTITION BY RANGE (clock)(PARTITION p{{ result_month.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE history_str PARTITION BY RANGE (clock)(PARTITION p{{ result_month.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE history_text PARTITION BY RANGE (clock)(PARTITION p{{ result_month.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE history_log PARTITION BY RANGE (clock)(PARTITION p{{ result_month.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE trends_uint PARTITION BY RANGE (clock)(PARTITION p{{ result_year.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+    - ALTER TABLE trends PARTITION BY RANGE (clock)(PARTITION p{{ result_year.stdout }} VALUES LESS THAN (UNIX_TIMESTAMP('{{ result.stdout }}')) ENGINE = InnoDB);
+  changed_when: false  
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition  
+
+- name: Run script mysql_zbx_part.pl
+  command: perl /usr/lib/zabbix/mysql_zbx_part.pl
+  changed_when: false
+  when:
+    - zabbix_server_database == 'mysql' and zabbix_database_partition

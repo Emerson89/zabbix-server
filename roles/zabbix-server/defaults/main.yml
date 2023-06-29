@@ -7,6 +7,11 @@ db_zabbix_pass: Tg0z64OVNzFwNA==
 postgresql_user: postgres
 postgresql_group: postgres
 postgresql_unix_socket_directories: /var/run/postgresql
+time_zone: America/Sao_Paulo
+history_days: 30
+trends_month: 2
+mysql_cron_min: "0"
+mysql_cron_hr: "22"
 
 zabbix_repo: zabbix
 zabbix_repo_yum:
@@ -48,6 +53,7 @@ zabbix_server_database: mysql # mysql or pgsql
 zabbix_server_database_long: mysql # mysql or pgsql
 zabbix_database_creation: True
 zabbix_database_sqlload: True
+zabbix_database_partition: false
 zabbix_server_ha: disable
 # Databases to ensure exist.
 postgresql_databases: []

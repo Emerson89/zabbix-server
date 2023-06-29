@@ -10,7 +10,7 @@ mysql_root_pass: Tg0z64OVddNzFwNA==
 db_zabbix_pass: Tg0z64OVNzFwNA==
 zbx_user_privileges: localhost
 mysql_repo: mysql
-
+time_zone: America/Sao_Paulo
 # Databases.
 mysql_databases: []
 #   - name: example

@@ -2,7 +2,7 @@
   selinux:
     state: disabled
   ignore_errors: true
-    
+
 - name: Install packages
   yum:
     name:
@@ -12,6 +12,19 @@
         - telnet
         - python3
         - python3-pip
+        - glibc-all-langpacks
+    state: present
+
+- name: Enabled powertools
+  command: yum config-manager --set-enabled powertools
+
+- name: Install packages
+  yum:
+    name:
+        - perl-DateTime
+        - perl-Sys-Syslog
+        - perl-DBI
+        - perl-DBD-mysql
     state: present
 
 - name: Install pip packages

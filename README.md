@@ -24,6 +24,7 @@
 |    5.4         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
 |    6.0         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
 |    6.4         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
+|    6.5         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
 
 Suporte a banco de dados MySQL e Postgresql com timescaledb
 
@@ -38,23 +39,43 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 ## Crie o arquivo de inventário hosts 
 
 ## Variáveis
+
 | Nome | Descrição | Default | 
 |------|-----------|---------|
 | zabbix_version | Versão zabbix-server | 4.4|
-| postgresql_version | Versao postgresql | 13 |
 | zabbix_server_database_long | Tipo de database[mysql/pgsql] |  mysql
 | zabbix_server_database | Tipo de database[mysql/pgsql] | mysql
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP front | 127.0.0.1
 | zbx_server_address | IP zabbix | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 ou maior) | 127.0.0.1
-| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 ou maior) enable|disable | disable
+| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 ou acima) | 127.0.0.1
+| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 ou acima) enable|disable | disable
+| mysql_root_pass | password user root mysql | Tg0z64OVddNzFwNA==
+| db_zabbix_pass | password user zabbix mysql | Tg0z64OVddNzFwNA==
+| postgresql_version | version postgresql | 13
+| zabbix_database_partition | partition mysql | false
+| history_days | history em dias para realizar a particao | 13
+| trends_month | thends em mes para realizar a particao | 2
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```yaml
 ---
 - hosts: all
   become: true
+  roles:
+    - {role: roles/mysql}
+    - {role: roles/zabbix-server}
+    - {role: roles/zabbix-front}
+```
+## Exemplo de playbook para instalação em localhost particionamento do banco de dados MySQL
+```yaml
+---
+- hosts: all
+  become: true
+  vars:
+    zabbix_database_partition: true
+    history_days: 10
+    trends_month: 1
   roles:
     - {role: roles/mysql}
     - {role: roles/zabbix-server}
