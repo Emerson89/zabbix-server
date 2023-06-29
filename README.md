@@ -42,20 +42,20 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 
 | Nome | Descrição | Default | 
 |------|-----------|---------|
-| zabbix_version | Versão zabbix-server | 4.4|
+| zabbix_version | versão zabbix-server | 4.4|
 | zabbix_server_database_long | Tipo de database[mysql/pgsql] |  mysql
 | zabbix_server_database | Tipo de database[mysql/pgsql] | mysql
 | zbx_database_address | IP database | 127.0.0.1
-| zbx_front_address | IP front | 127.0.0.1
-| zbx_server_address | IP zabbix | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 (Somente para versão 6.0 ou acima) | 127.0.0.1
-| zabbix_server_ha | habilita o HA (Somente para a Versão 6.0 ou acima) enable|disable | disable
-| mysql_root_pass | password user root mysql | Tg0z64OVddNzFwNA==
-| db_zabbix_pass | password user zabbix mysql | Tg0z64OVddNzFwNA==
-| postgresql_version | version postgresql | 13
-| zabbix_database_partition | partition mysql | false
-| history_days | history em dias para realizar a particao | 13
-| trends_month | thends em mes para realizar a particao | 2
+| zbx_front_address | IP zabbix-front | 127.0.0.1
+| zbx_server_address | IP zabbix-server | 127.0.0.1
+| zbx_server_ha | IP zabbix node 2 **(Somente para versão 6.0 ou acima)** | 127.0.0.1
+| zabbix_server_ha | habilita o HA **(Somente para a Versão 6.0 ou acima)** enable|disable | disable
+| mysql_root_pass | password user root **mysql** | Tg0z64OVddNzFwNA==
+| db_zabbix_pass | password user zabbix **mysql** | Tg0z64OVddNzFwNA==
+| postgresql_version | versão postgresql | 13
+| zabbix_database_partition | habilita particionamento **mysql** | false
+| history_days | history em dias para realizar o particionamento **mysql** | 13
+| trends_month | thends em mes para realizar o particionamento **mysql** | 2
 
 ## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
 ```yaml
