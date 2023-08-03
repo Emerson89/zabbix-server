@@ -33,7 +33,16 @@ Para limitar uso de espaço em disco pelo arquivo de log binlog do mysql que por
 show variables like '%expire_logs%';
 SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 ```
+60*60*24*10 = 864000 
 
+Segundos para Dias
+
+dias = segundos / 86400
+
+dias = 864000 / 86400
+
+dias = 10
+#
 # Como Usar!!!
 
 ## Crie o arquivo de inventário hosts 
