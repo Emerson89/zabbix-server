@@ -90,6 +90,17 @@ dias = 10
     - {role: roles/zabbix-server}
     - {role: roles/zabbix-front}
 ```
+OBS: 
+ - Navegue até o frontend do Zabbix e vá para Administration | Housekeeping.
+ - Certifique-se de que Enable internal housekeeping esteja desligado para History e Trends.
+
+Para validar o partiticionamento acesse o banco
+
+```
+use zabbix;
+show create table history;
+```
+
 ## Exemplo de playbook para instalação em localhost postgresql
 ```yaml
 ---
