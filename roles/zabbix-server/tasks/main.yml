@@ -6,7 +6,7 @@
   when: ansible_distribution_file_variety == 'Debian'
 
 - name: "Installing the database"
-  include: "{{ zabbix_server_database_long }}.yml"
+  include_tasks: "{{ zabbix_server_database_long }}.yml"
 
 - name: Set timezone to America/Sao_Paulo
   timezone:
