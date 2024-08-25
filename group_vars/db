@@ -1,0 +1,3 @@
+---
+zbx_server_address: 172.16.33.11
+zbx_front_address: 172.16.33.12

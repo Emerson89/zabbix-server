@@ -15,6 +15,13 @@
         - python3-dev
     state: present
 
+- name: Set global.break Debian 12
+  shell: python3 -m pip config set global.break-system-packages true
+  register: result
+  when: 
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version >= '12'
+    
 - name: Install pip packages
   pip:
     name:

@@ -1,0 +1,31 @@
+---
+- hosts: db
+  become: true
+  vars:
+    zbx_server_address: 172.16.33.11
+    zbx_front_address: 172.16.33.13
+    zbx_server_ip_ha: 172.16.33.12
+  roles:
+    - {role: ../roles/postgresql}
+
+- hosts: server
+  become: true
+  vars:
+    zabbix_server_ha: true
+    zbx_database_address: 172.16.33.10
+    zabbix_server_database_long: pgsql
+    zabbix_server_database: pgsql
+    zabbix_version: 7.0
+  roles:
+    - {role: ../roles/zabbix-server}
+
+- hosts: front
+  become: true
+  vars:
+    zabbix_server_ha: true
+    zbx_server_address: 172.16.33.11
+    zbx_database_address: 172.16.33.10
+    zabbix_server_database: pgsql
+    zabbix_version: 7.0
+  roles:
+    - {role: ../roles/zabbix-front}    

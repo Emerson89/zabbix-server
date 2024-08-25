@@ -1,0 +1,15 @@
+---
+- hosts: db
+  become: true
+  roles:
+    - {role: ../roles/postgresql}
+
+- hosts: server
+  become: true
+  roles:
+    - {role: ../roles/zabbix-server}
+
+- hosts: front
+  become: true
+  roles:
+    - {role: ../roles/zabbix-front}    

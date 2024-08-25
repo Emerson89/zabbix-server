@@ -31,9 +31,18 @@
   changed_when: False
   when:
     - zabbix_database_sqlload
-    - zabbix_version is version_compare('6.0', '>=')
+    - zabbix_version is version_compare('6.0', '<=')
     - ansible_distribution_file_variety == 'RedHat'
   register: ls_output_time
+
+- name: "RedHat timescaledb Zabbix 7xx | Get the file for schema.sql"
+  shell: ls -1 {{ datafiles_path_time }}/schema.sql
+  changed_when: False
+  when:
+    - zabbix_database_sqlload
+    - ansible_distribution_file_variety == 'RedHat'
+    - zabbix_version is version_compare('7.0', '>=')
+  register: ls_output_70  
 
 - name: "Debian | Get the file for timescale.sql"
   shell: ls -1 {{ datafiles_path }}/timescaledb.sql
@@ -41,7 +50,18 @@
   when:
     - zabbix_database_sqlload
     - ansible_distribution_file_variety == 'Debian'
+    - zabbix_version is version_compare('7.0', '<')
   register: ls_output_deb
+
+- name: "Debian timescaledb Zabbix 7xx | Get the file for schema.sql"
+  shell: ls -1 {{ datafiles_path_time }}/schema.sql
+  changed_when: False
+  when:
+    - zabbix_database_sqlload
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version >= '12'
+    - zabbix_version is version_compare('7.0', '>=')
+  register: ls_output_deb_70  
 
 - name: Import Schema zabbix
   postgresql_db:
@@ -66,7 +86,7 @@
     - zabbix_database_creation
   ignore_errors: true
 
-- name: Import Schema zabbix v6
+- name: Import Schema zabbix v6xx and v7xx
   postgresql_db:
     name: "{{ item.name }}"
     login_host: "{{ item.login_host | default('localhost') }}"
@@ -133,7 +153,30 @@
     - zabbix_database_sqlload
     - zabbix_database_creation
     - ansible_distribution_file_variety == 'RedHat'
-    - zabbix_version is version_compare('6.0', '>=')
+    - zabbix_version is version_compare('6.0', '<=')
+
+- name: RedHat | Import Schema timescaledb v7xx
+  postgresql_db:
+    name: "{{ item.name }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories) }}"
+    port: "{{ item.port | default(omit) }}"
+    owner: zabbix
+    state: restore
+    target: "{{ ls_output_70.stdout }}"
+  with_items: "{{ postgresql_databases_import }}"
+  no_log: true
+  become: true
+  become_user: "{{ zbx_database_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+    - ansible_distribution_file_variety == 'RedHat'
+    - zabbix_version is version_compare('7.0', '>=')
 
 - name: Debian | Import Schema timescaledb
   postgresql_db:
@@ -156,3 +199,29 @@
     - zabbix_database_sqlload
     - zabbix_database_creation
     - ansible_distribution_file_variety == 'Debian'
+    - zabbix_version is version_compare('7.0', '<')
+
+- name: Debian | Import Schema timescaledb Zabbix 7xx
+  postgresql_db:
+    name: "{{ item.name }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket_directories) }}"
+    port: "{{ item.port | default(omit) }}"
+    owner: zabbix
+    state: restore
+    target: "{{ ls_output_deb_70.stdout }}"
+  with_items: "{{ postgresql_databases_import }}"
+  no_log: true
+  become: true
+  become_user: "{{ zbx_database_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  when:
+    - zabbix_database_sqlload
+    - zabbix_database_creation
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version >= '12'
+    - zabbix_version is version_compare('7.0', '>=')
+

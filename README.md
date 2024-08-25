@@ -3,28 +3,29 @@
 ![Badge](https://img.shields.io/badge/ansible-zabbix-red)
 
 ## Dependências
-![Badge](https://img.shields.io/badge/ansible-2.9.10-blue)
+![Badge](https://img.shields.io/badge/ansible-2.16.6-blue)
 
 ## Suporte SO
 
 - Ubuntu20
 - Ubuntu22
 - Debian11
+- Debian12
 - Rocky8
 - Almalinux8
 - Centos8
 
-## Versões suportadas zabbix
+## Versões OS suportadas Zabbix
 
-| Versões Zabbix |  Debian 11 | Ubuntu 20 | Ubuntu 22 | Rocky 8 | Almalinux 8 | Centos 8 |
-|   ----         |     ---    |    ---    |    ---    |   ---   |     ---     |    ---   |
-|    4.4         |      No    |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
-|    5.0         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
-|    5.2         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
-|    5.4         |      Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
-|    6.0         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
-|    6.4         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
-|    6.5         |      Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
+| Versões Zabbix |  Debian 11 | Debian 12 | Ubuntu 20 | Ubuntu 22 | Rocky 8 | Almalinux 8 | Centos 8 |
+|   ----         |     ---    |    ---    |    ---    |    ---    |   ---   |     ---     |    ---   |
+|    4.4         |      No    |     Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.0         |      Yes   |     Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.2         |      Yes   |     Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    5.4         |      Yes   |     Yes   |     Yes   |      No   |   Yes   |       Yes   |    Yes   |
+|    6.0         |      Yes   |     Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
+|    6.4         |      Yes   |     Yes   |     Yes   |      Yes  |   Yes   |       Yes   |    Yes   |
+|    7.0         |      No    |     Yes   |     No    |      Yes  |   Yes   |       Yes   |    Yes   |
 
 Suporte a banco de dados MySQL e Postgresql com timescaledb
 
@@ -57,8 +58,8 @@ dias = 10
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP zabbix-front | 127.0.0.1
 | zbx_server_address | IP zabbix-server | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 **(Somente para versão 6.0 ou acima)** | 127.0.0.1
-| zabbix_server_ha | habilita o HA **(Somente para a Versão 6.0 ou acima)** enable|disable | disable
+| zbx_server_ip_ha | IP zabbix node 2 **(Somente para versão 6.0 ou acima)** | 127.0.0.1
+| zabbix_server_ha | habilita o HA **(Somente para a Versão 6.0 ou acima)** true|false | false
 | mysql_root_pass | password user root **mysql** | Tg0z64OVddNzFwNA==
 | db_zabbix_pass | password user zabbix **mysql** | Tg0z64OVddNzFwNA==
 | postgresql_version | versão postgresql | 13
@@ -66,11 +67,13 @@ dias = 10
 | history_days | history em dias para realizar o particionamento **mysql** | 13
 | trends_month | thends em mes para realizar o particionamento **mysql** | 2
 
-## Exemplo de playbook para instalação em localhost Mysql (DEFAULT)
+## Exemplo basico de playbook para instalação em localhost MySQL (DEFAULT)
 ```yaml
 ---
 - hosts: all
   become: true
+  vars:
+    zabbix_version: 7.0
   roles:
     - {role: roles/mysql}
     - {role: roles/zabbix-server}
@@ -85,6 +88,7 @@ dias = 10
     zabbix_database_partition: true
     history_days: 10
     trends_month: 1
+    zabbix_version: 7.0
   roles:
     - {role: roles/mysql}
     - {role: roles/zabbix-server}
@@ -109,6 +113,7 @@ show create table history;
   vars:
     zabbix_server_database: pgsql
     zabbix_server_database_long: pgsql
+    zabbix_version: 7.0
   roles:
     - {role: roles/postgresql}
     - {role: roles/zabbix-server}
@@ -124,6 +129,7 @@ show create table history;
     zabbix_server_database: pgsql
     zabbix_server_database_long: pgsql
     postgresql_version: 14
+    zabbix_version: 7.0
   roles:
     - {role: roles/postgresql}
     - {role: roles/zabbix-server}
@@ -138,7 +144,7 @@ show create table history;
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_front_address: IP-FRONT
-    zbx_server_ip_ha: IP-SERVER-NODE-2 ##(Caso for usar HA somente versão 6.0)
+    zbx_server_ip_ha: IP-SERVER-NODE-2 ##(Caso for usar HA somente versão 6.0 acima)
   become: yes
   roles:
   - mysql
@@ -147,7 +153,8 @@ show create table history;
   hosts: zbx
   vars:
     zbx_database_address: IP-SERVER-DATABASE
-    zabbix_server_ha: enable ##(Caso for usar HA somente versão 6.0)
+    zabbix_server_ha: true ##(Caso for usar HA somente versão 6.0 acima)
+    zabbix_version: 7.0
   become: yes
   roles:
   - zabbix-server
@@ -155,9 +162,10 @@ show create table history;
 - name: Install Front
   hosts: web
   vars:    
-    zabbix_server_ha: enable ##(Caso for usar HA somente versão 6.0)
+    zabbix_server_ha: true ##(Caso for usar HA somente versão 6.0 acima)
     zbx_database_address: IP-SERVER-DATABASE
     zbx_server_address: IP-SERVER-ZABBIX
+    zabbix_version: 7.0
   become: yes
   roles:
   - zabbix-front
@@ -170,7 +178,7 @@ show create table history;
   vars:
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_front_address: IP-SERVER-FRONT
-    zbx_server_ip_ha: IP-SERVER-NODE-2 ##(Caso for usar HA somente versão 6.0)
+    zbx_server_ip_ha: IP-SERVER-NODE-2 ##(Caso for usar HA somente versão 6.0 acima)
   become: true
   roles:
   - postgresql
@@ -178,10 +186,11 @@ show create table history;
 - name: Install Zabbix Server
   hosts: zabbix
   vars:
-    zabbix_server_ha: enable ##(Caso for usar HA somente versão 6.0)
+    zabbix_server_ha: true ##(Caso for usar HA somente versão 6.0 acima)
     zbx_database_address: IP-SERVER-DATABASE
     zabbix_server_database_long: pgsql
     zabbix_server_database: pgsql
+    zabbix_version: 7.0
   become: true
   roles:
   - zabbix-server
@@ -189,15 +198,60 @@ show create table history;
 - name: Install Front
   hosts: web
   vars:
-    zabbix_server_ha: enable ##(Caso for usar HA somente versão 6.0)
+    zabbix_server_ha: true ##(Caso for usar HA somente versão 6.0 acima)
     zbx_server_address: IP-SERVER-ZABBIX
     zbx_database_address: IP-SERVER-DATABASE
     zabbix_server_database: pgsql
+    zabbix_version: 7.0
   become: true
   roles:
   - zabbix-front
 ```
-## Exemplo arquivo de inventório HA versão 6.0
+
+## Usando group_vars
+
+Ex.
+
+```bash
+group_vars/
+├── db
+---
+zbx_server_address: 172.16.33.11
+zbx_front_address: 172.16.33.12
+├── front
+---
+zbx_database_address: 172.16.33.10
+zbx_server_address: 172.16.33.11
+zabbix_version: 7.0
+zabbix_server_database: pgsql
+└── server
+---
+zbx_database_address: 172.16.33.10
+zabbix_version: 7.0
+zabbix_server_database_long: pgsql
+zabbix_server_database: pgsql
+```
+
+```yaml
+---
+- hosts: db
+  become: true
+  roles:
+    - {role: ../roles/postgresql}
+
+- hosts: server
+  become: true
+  roles:
+    - {role: ../roles/zabbix-server}
+
+- hosts: front
+  become: true
+  roles:
+    - {role: ../roles/zabbix-front}    
+```    
+#
+## Exemplo arquivo de inventório HA versão 6.0 acima
+
 ```yaml
 [db]
 IP-DATABASE ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
@@ -207,37 +261,87 @@ IP-ZABBIX_SERVER-NODE2 ansible_ssh_private_key_file=PATH/private_key ansible_use
 [web]
 IP_FRONT ansible_ssh_private_key_file=PATH/private_key ansible_user=vagrant
 ```
-
+#
 ## Execute o playbook
-```
-ansible-playbook -i hosts zabbix.yml --extra-vars "zabbix_version=5.0"
+
+```bash
+ansible-playbook -i hosts zabbix.yml
 ```
 
+#
 ## Para nível de aprendizado e teste há opção de utilizar o vagrant com virtualbox
 
 ## Para instalação: 
+
 - https://www.vagrantup.com/downloads
 - https://www.virtualbox.org/wiki/Downloads
 
-No arquivo Vagranfile se encontra opções de SO que é suportado nesta instalação o default é rocky 8, caso queira utilizar outra opção descomente a linha
 
-```ruby
-vms = {
-#'rocky-srv' => {'memory' => '2024', 'cpus' => '1', 'ip' => '11', 'box' => 'rockylinux/8'},
-'almalinux-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '12', 'box' => 'almalinux/8'},
-#'debian-srv' => {'memory' => '1024', 'cpus' => '1', 'ip' => '13', 'box' => 'debian/buster64'},
-#'ubuntu-srv' => {'memory' => '1024', 'cpus' => '2', 'ip' => '14', 'box' => 'ubuntu/focal64'},
-}
-```
-Para setar versão zabbix em *zabbix.yml* altere a variável *zabbix_version* default *4.4* conforme sua necessidade
+[OPTIONAL] - *configured for the host-only network is not within the allowed ranges*
 
-# Para utilizar
+```bash
+The IP address configured for the host-only network is not within the
+allowed ranges. Please update the address used to be within the allowed
+ranges and run the command again.
+
+  Address: 172.16.33.12
+  Ranges: 192.168.56.0/21
+
+Valid ranges can be modified in the /etc/vbox/networks.conf file. For
+more information including valid format see:
+
+  https://www.virtualbox.org/manual/ch06.html#network_hostonly
 ```
-vagrant up - Provisiona a VM
-vagrant ssh - Acesso via ssh
-vagrant halt - Desliga a VM
+```bash
+sudo mkdir /etc/vbox
 ```
-Terminado o provisionamento basta acessar no navegador http://192.168.33.12 - (default) para acesso ao Zabbix
+```bash
+sudo echo "* 0.0.0.0/0 ::/0" | sudo tee /etc/vbox/networks.conf
+```
+
+**basic**
+
+- up
+
+```bash
+bash basic.sh -up
+```
+
+- destroy
+
+```bash
+bash basic.sh -destroy
+```
+
+**mult-servers**
+
+- up
+
+```bash
+bash mult.sh -up
+```
+
+- destroy
+
+```bash
+bash mult.sh -destroy
+```
+
+
+**mult-servers-ha**
+
+- up
+
+```bash
+bash mult_ha.sh -up
+```
+
+- destroy
+
+```bash
+bash mult_ha.sh -destroy
+```
+
 
 ## Licença
 ![Badge](https://img.shields.io/badge/license-GPLv3-green)

@@ -1,0 +1,5 @@
+---
+zbx_database_address: 172.16.33.10
+zabbix_version: 7.0
+zabbix_server_database_long: pgsql
+zabbix_server_database: pgsql

@@ -89,6 +89,14 @@
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'pgsql'
 
+- name: "RedHat pgsql| Set facts for Zabbix >= 7.0"
+  set_fact:
+    datafiles_path_time: "/usr/share/zabbix-sql-scripts/{{ zabbix_database_postgresql }}/timescaledb"
+  when:
+    - zabbix_version is version_compare('7.0', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
+
 - name: Install Zabbix Repo.
   yum_repository:
     name: "{{ item.name }}"

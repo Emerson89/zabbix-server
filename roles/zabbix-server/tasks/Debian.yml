@@ -41,6 +41,16 @@
     - zabbix_database_creation or zabbix_database_sqlload
     - zabbix_server_database == 'pgsql'
 
+- name: "Debian pgsql timescaledb | Set facts for Zabbix >= 7.0"
+  set_fact:
+    datafiles_path_time: "/usr/share/zabbix-sql-scripts/{{ zabbix_database_postgresql }}/timescaledb"
+  when:
+    - zabbix_version is version_compare('7.0', '>=')
+    - zabbix_database_creation or zabbix_database_sqlload
+    - zabbix_server_database == 'pgsql'
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version >= '12'   
+
 - name: Only run update
   apt:
     update_cache: yes
