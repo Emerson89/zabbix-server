@@ -1,8 +1,12 @@
 ---
 # Variable configuration.
 - name: Include OS-specific variables (Debian).
-  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-  when: ansible_distribution_file_variety == 'Debian'
+  include_vars: "Debian.yml"
+  when: ansible_distribution == 'Debian'
+
+- name: Include OS-specific variables (Ubuntu).
+  include_vars: "Ubuntu.yml"
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Include OS-specific variables (RedHat).
   include_vars: "{{ ansible_distribution_file_variety }}.yml"

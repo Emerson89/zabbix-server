@@ -21,6 +21,17 @@
         - libdbd-mysql-perl
     state: present
 
+- name: Set global.break Debian 12
+  shell: python3 -m pip config set global.break-system-packages true
+  register: result
+  when: 
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version >= '12'
+  
+- name: Display
+  debug:
+    msg: "{{ result.stdout }}"
+  
 - name: Add an Apt signing key mysql
   apt_key:
     url: https://mariadb.org/mariadb_release_signing_key.asc

@@ -13,10 +13,15 @@
     state: latest 
     update_cache: true
 
-- name: Enable package php
+- name: Enable package php7
   command: dnf module enable php:7.4 -y
   when: 
-   - zabbix_version is version_compare('6.0', '>=')
+   - zabbix_version is version_compare('6.0', '<=')
+
+- name: Enable package php8
+  command: dnf module enable php:8.0 -y
+  when: 
+   - zabbix_version is version_compare('7.0', '>=')
 
 - name: Install packages
   yum:

@@ -1,4 +1,12 @@
 ---
+- name: Capture ip
+  shell: echo $(ip a | awk '/inet / && !/127.0.0.1/ && !/10.0.2.15/ {split($2, a, "/"); print a[1]}' |head -n1)
+  register: result_ip
+
+- name: Set ip
+  set_fact:
+    ip: "{{ result_ip.stdout }}"
+
 - include_tasks: RedHat.yml
   when: ansible_distribution_file_variety == 'RedHat'
 
@@ -6,7 +14,7 @@
   when: ansible_distribution_file_variety == 'Debian'
 
 - name: "Installing the database"
-  include: "{{ zabbix_server_database_long }}.yml"
+  include_tasks: "{{ zabbix_server_database_long }}.yml"
 
 - name: Set timezone to America/Sao_Paulo
   timezone:

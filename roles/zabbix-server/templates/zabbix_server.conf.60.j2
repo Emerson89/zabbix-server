@@ -988,7 +988,7 @@ StatsAllowedIP=127.0.0.1
 #
 # Mandatory: no
 # Default:
-{% if zabbix_server_ha == "enable" %}
+{% if zabbix_server_ha == true %}
 HANodeName={{ ansible_hostname }}
 {% else %}
 # HANodeName=
@@ -1002,8 +1002,8 @@ HANodeName={{ ansible_hostname }}
 #
 # Mandatory: no
 # Default:
-{% if zabbix_server_ha == "enable" %} 
-NodeAddress={{ ansible_ssh_host }}:10051
+{% if zabbix_server_ha == true %} 
+NodeAddress={{ ip }}:10051
 {% else %}
 # NodeAddress=localhost:10051
 {% endif %}

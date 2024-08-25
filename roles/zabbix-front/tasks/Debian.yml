@@ -57,9 +57,17 @@
   when:
     - ansible_distribution == 'Debian' 
 
+- name: Verify version php
+  shell: php -v | grep -oP '^PHP \K[0-9]+\.[0-9]+'
+  register: php_version
+
+- name: Set version
+  set_fact:
+    php_version: "{{ php_version.stdout }}"
+
 - name: php-pgsql | Install Zabbix packeges
   apt:
-    name: php7.4-pgsql
+    name: php{{ php_version }}-pgsql
   when:
     - zabbix_server_database == 'pgsql'
 
@@ -70,19 +78,9 @@
 
 - name: Make sure php service is running
   systemd:
-    name: php7.4-fpm
+    name: php{{ php_version }}-fpm
     state: restarted
     enabled: yes
-  when: 
-    - ansible_distribution_file_variety == 'Debian' and ansible_distribution_major_version <= '20'
-
-- name: Make sure php service is running
-  systemd:
-    name: php8.1-fpm
-    state: restarted
-    enabled: yes
-  when:
-    - ansible_distribution == 'Ubuntu' and ansible_distribution_major_version >= '22'
 
 - name: Make sure nginx service is running
   systemd:

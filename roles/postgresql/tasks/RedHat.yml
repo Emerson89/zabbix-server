@@ -27,12 +27,13 @@
 
 - name: Install Key-repo
   rpm_key:
-    key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+    key: https://download.postgresql.org/pub/repos/yum/keys/RPM-GPG-KEY-PGDG
 
 - name: Install postgresql Repo.
   dnf:
    name: "{{ postgresql_enablerepo }}"
    state: present
+   disable_gpg_check: true
 
 - name: Install timescaledb Repo.
   yum_repository:

@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  vars:
+    zabbix_version: 7.0
+  roles:
+    - {role: ../roles/mysql}
+    - {role: ../roles/zabbix-server}
+    - {role: ../roles/zabbix-front}
