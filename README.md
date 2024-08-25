@@ -49,7 +49,7 @@ SET GLOBAL binlog_expire_logs_seconds = (60*60*24*10);
 | zbx_database_address | IP database | 127.0.0.1
 | zbx_front_address | IP zabbix-front | 127.0.0.1
 | zbx_server_address | IP zabbix-server | 127.0.0.1
-| zbx_server_ha | IP zabbix node 2 **(Somente para versão 6.0 ou acima)** | 127.0.0.1
+| zbx_server_ip_ha | IP zabbix node 2 **(Somente para versão 6.0 ou acima)** | 127.0.0.1
 | zabbix_server_ha | habilita o HA **(Somente para a Versão 6.0 ou acima)** true|false | false
 | mysql_root_pass | password user root **mysql** | Tg0z64OVddNzFwNA==
 | db_zabbix_pass | password user zabbix **mysql** | Tg0z64OVddNzFwNA==
