@@ -15,6 +15,19 @@
 pip install -r requirements.txt 
 ```
 
+Caso apareça esse warning
+
+```bash
+/usr/lib/python3/dist-packages/paramiko/pkey.py:81: CryptographyDeprecationWarning: TripleDES has been moved to cryptography.hazmat.decrepit.ciphers.algorithms.TripleDES and will be removed
+```
+
+Atualize o paramiko
+
+```bash
+pip3.10 install --upgrade paramiko
+```
+
+#
 ## Suporte SO
 
 - Ubuntu20
@@ -138,7 +151,7 @@ show create table history;
   vars:
     zabbix_server_database: pgsql
     zabbix_server_database_long: pgsql
-    postgresql_version: 14
+    postgresql_version: 17
     zabbix_version: 7.0
   roles:
     - {role: roles/postgresql}

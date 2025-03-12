@@ -44,7 +44,7 @@
     enabled: 1
     gpgkey: "https://packagecloud.io/timescale/timescaledb/gpgkey"
     state: "present"
-
+  
 - name: Disable package postgresql
   command: dnf module disable postgresql -y
 
